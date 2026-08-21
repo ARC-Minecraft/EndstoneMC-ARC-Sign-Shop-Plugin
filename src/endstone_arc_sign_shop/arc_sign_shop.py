@@ -30,13 +30,21 @@ class ARCSignShopPlugin(Plugin):
     commands = {
         "ss": {
             "description": "Sign shop commands",
-            "usages": ["/ss", "/ss qs start", "/ss qs start both", "/ss qs start sell", "/ss qs start buy", "/ss qs stop"],
+            "usages": [
+                "/ss",
+                "/ss qs start (both|sell|buy)[mode: SsQsMode]",
+                "/ss qs stop",
+            ],
             "permissions": ["arc_sign_shop.command.ss"],
         },
         "ssmanage": {
             "description": "Manage sign shops, op only.",
-            "usages": ["/ssmanage"]
-        }
+            "usages": [
+                "/ssmanage",
+                "/ssmanage (list|clear|reload|prices|pricereload|pricereset|delns)<action: SsManageAction>",
+                "/ssmanage delns [namespace: str]",
+            ],
+        },
     }
 
     permissions = {

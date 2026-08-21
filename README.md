@@ -1,6 +1,6 @@
 # 弧光木牌商店插件 (ARC Sign Shop Plugin)
 
-[![版本](https://img.shields.io/badge/版本-1.0.2-blue.svg)](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Sign-Shop-Plugin)
+[![版本](https://img.shields.io/badge/版本-1.0.3-blue.svg)](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Sign-Shop-Plugin)
 [![EndStone](https://img.shields.io/badge/EndStone-0.10+-green.svg)](https://github.com/EndstoneMC/endstone)
 
 用木牌创建商店：右键开店/交易，牌面自动显示商店信息。
@@ -38,6 +38,6 @@
 
 ## 安装
 
-将 `endstone_arc_sign_shop-1.0.2-*.whl` 放入服务器 `plugins` 目录后重启。数据目录：`plugins/ARCSignShop/`。
+将 `endstone_arc_sign_shop-1.0.3-*.whl` 放入服务器 `plugins` 目录后重启。数据目录：`plugins/ARCSignShop/`。
 
 > 说明：`endstone.block.Sign` 目前仅在 [latest 文档](https://endstone.dev/latest/reference/python/block/#endstone.block.Sign) 出现，PyPI **0.11.9** 尚未导出。本插件在无 Sign 时回退为 `/data merge block` 写牌面；Endstone 正式放出 Sign 后会自动走原生 API。

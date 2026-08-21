@@ -574,50 +574,13 @@ class ARCSignShopPlugin(Plugin):
         else:
             self._safe_log('error', "[ARCSignShop] Failed to create chunk index table")
 
-        # 创建交易量追踪表（用于动态定价）
-        trade_volume_fields = {
-            "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-            "item_type": "TEXT NOT NULL",  # 物品类型
-            "trade_type": "TEXT NOT NULL",  # 交易类型：'sell'玩家购买, 'buy'玩家出售
-            "quantity": "INTEGER NOT NULL",  # 交易数量
-            "total_amount": "REAL NOT NULL DEFAULT 0",  # 交易总金额（单价×数量）
-            "trade_time": "TEXT NOT NULL"  # 交易时间
-        }
-        
-        if False and self.db_manager.create_table("item_trade_volume", trade_volume_fields):
-            self._safe_log('info', "[ARCSignShop] Item trade volume table created successfully")
-        else:
-            self._safe_log('error', "[ARCSignShop] Failed to create item trade volume table")
-        
-        # 创建价格调整表（用于动态定价和每日波动）
-        price_adjustment_fields = {
-            "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-            "item_type": "TEXT NOT NULL UNIQUE",  # 物品类型
-            "demand_sell_adjust": "REAL NOT NULL DEFAULT 0",  # 需求驱动的出售价调整（正数=涨价）
-            "demand_buy_adjust": "REAL NOT NULL DEFAULT 0",  # 需求驱动的回收价调整（负数=降价）
-            "daily_adjust_percent": "REAL NOT NULL DEFAULT 0",  # 每日波动百分比
-            "sell_amount_accumulated": "REAL NOT NULL DEFAULT 0",  # 出售交易累计金额（未消耗部分）
-            "buy_amount_accumulated": "REAL NOT NULL DEFAULT 0",  # 收购交易累计金额（未消耗部分）
-            "sell_link_adjust": "REAL NOT NULL DEFAULT 0",  # 出售涨价联动到回收价的调整（正数=涨价）
-            "last_updated": "TEXT NOT NULL"  # 最后更新时间
-        }
-        
-        if False and self.db_manager.create_table("price_adjustments", price_adjustment_fields):
-            self._safe_log('info', "[ARCSignShop] Price adjustments table created successfully")
-        else:
-            self._safe_log('error', "[ARCSignShop] Failed to create price adjustments table")
+        # item_trade_volume / price_adjustments 已迁至 arc_market_economy，不再在本插件建表
 
         # 迁移：为已有表添加 is_infinite 列（若不存在）
         self._migrate_add_is_infinite_column()
         
         # 迁移：为已有表添加 pricing_mode 和 discount_percent 列（若不存在）
         self._migrate_add_pricing_columns()
-        
-        # 迁移：为 item_trade_volume 表添加 total_amount 列（若不存在）
-        self._migrate_add_trade_amount_column()
-        
-        # 迁移：为 price_adjustments 表添加累计金额列（若不存在）
-        self._migrate_add_accumulated_columns()
 
         # 迁移：系统商店统一为 SYSTEM 店主；售罄店保持可管理以便补货
         self._migrate_system_shop_owner_and_reactivate()
@@ -670,46 +633,6 @@ class ARCSignShopPlugin(Plugin):
                 self._safe_log('info', "[ARCSignShop] Migrated: added discount_percent column to sign_shops")
         except Exception as e:
             self._safe_log('error', f"[ARCSignShop] Migrate pricing columns error: {str(e)}")
-
-    def _migrate_add_trade_amount_column(self) -> None:
-        """为 item_trade_volume 表添加 total_amount 列（兼容旧数据库）"""
-        try:
-            rows = self.db_manager.query_all("PRAGMA table_info(item_trade_volume)")
-            if rows is None:
-                return
-            column_names = [row['name'] for row in rows]
-            if 'total_amount' not in column_names:
-                self.db_manager.execute(
-                    "ALTER TABLE item_trade_volume ADD COLUMN total_amount REAL NOT NULL DEFAULT 0"
-                )
-                self._safe_log('info', "[ARCSignShop] Migrated: added total_amount column to item_trade_volume")
-        except Exception as e:
-            self._safe_log('error', f"[ARCSignShop] Migrate total_amount column error: {str(e)}")
-
-    def _migrate_add_accumulated_columns(self) -> None:
-        """为 price_adjustments 表添加累计金额列和联动调整列（兼容旧数据库）"""
-        try:
-            rows = self.db_manager.query_all("PRAGMA table_info(price_adjustments)")
-            if rows is None:
-                return
-            column_names = [row['name'] for row in rows]
-            if 'sell_amount_accumulated' not in column_names:
-                self.db_manager.execute(
-                    "ALTER TABLE price_adjustments ADD COLUMN sell_amount_accumulated REAL NOT NULL DEFAULT 0"
-                )
-                self._safe_log('info', "[ARCSignShop] Migrated: added sell_amount_accumulated column to price_adjustments")
-            if 'buy_amount_accumulated' not in column_names:
-                self.db_manager.execute(
-                    "ALTER TABLE price_adjustments ADD COLUMN buy_amount_accumulated REAL NOT NULL DEFAULT 0"
-                )
-                self._safe_log('info', "[ARCSignShop] Migrated: added buy_amount_accumulated column to price_adjustments")
-            if 'sell_link_adjust' not in column_names:
-                self.db_manager.execute(
-                    "ALTER TABLE price_adjustments ADD COLUMN sell_link_adjust REAL NOT NULL DEFAULT 0"
-                )
-                self._safe_log('info', "[ARCSignShop] Migrated: added sell_link_adjust column to price_adjustments")
-        except Exception as e:
-            self._safe_log('error', f"[ARCSignShop] Migrate accumulated columns error: {str(e)}")
 
     # 无限商店库存/预算常量（表示无限）
     UNLIMITED_STOCK = 2147483647

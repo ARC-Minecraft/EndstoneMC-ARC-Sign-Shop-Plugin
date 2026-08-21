@@ -1,6 +1,6 @@
 # 弧光木牌商店插件 (ARC Sign Shop Plugin)
 
-[![版本](https://img.shields.io/badge/版本-1.0.0-blue.svg)](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Sign-Shop-Plugin)
+[![版本](https://img.shields.io/badge/版本-1.0.1-blue.svg)](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Sign-Shop-Plugin)
 [![EndStone](https://img.shields.io/badge/EndStone-0.10+-green.svg)](https://github.com/EndstoneMC/endstone)
 
 用木牌创建商店：右键开店/交易，牌面自动显示商店信息。
@@ -9,36 +9,24 @@
 
 | 类型 | 说明 |
 |------|------|
-| 玩家出售 | 玩家卖货 |
-| 玩家收购 | 玩家收购 |
-| 玩家交易 | 以物易物 |
-| 官方出售 | OP：自动定价或手动定价（系统无限） |
-| 官方收购 | OP：自动定价或手动定价（系统无限） |
+| 玩家出售 / 收购 / 交易 | 玩家自营 |
+| **官方商店（默认）** | 出售+回收**二合一** + 市场经济自动定价；管理里可关闭出售或回收，降级为单功能 |
+| 官方手动 | 固定单价的仅出售或仅回收系统无限店 |
 
-### 官方定价方式
+## 官方定价方式
 
-建官方出售/收购时先选：
-
-- **自动定价**：依赖 [弧光市场经济](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Market-Economy-Plugin)（`arc_market_economy`），动态价 + 日波动 + 成交调价
-- **手动定价**：OP 自填固定单价，仍为系统无限店，不回调市场
-
-## 木牌文案示例
-
-```
-[官方商店-收购]
-物品：钻石
-价格：100
-库存：∞
-```
+- **自动定价**：依赖 [弧光市场经济](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Market-Economy-Plugin)，默认建二合一时，玩家交互再选买/卖
+- **手动定价**：OP 自填固定单价（仅出售或仅回收）
 
 ## 指令
 
 | 指令 | 权限 | 说明 |
 |------|------|------|
 | `/ss` | 玩家 | 主面板 |
-| `/ss qs start [sell\|buy]` | OP | 快速设置官方**自动**定价店 |
+| `/ss qs start` | OP | 快速设置：**默认二合一 + 自动定价** |
+| `/ss qs start both\|sell\|buy` | OP | 指定模式快速设置 |
 | `/ss qs stop` | OP | 结束快速设置 |
-| `/ssmanage` | OP | 商店管理；`prices` 等会转发市场经济 |
+| `/ssmanage` | OP | 商店管理 |
 
 市场管理请用：`/market prices|reload|reset`
 
@@ -50,6 +38,4 @@
 
 ## 安装
 
-1. 安装市场经济 + 木牌商店 wheel 到 `plugins`
-2. 数据目录：`plugins/ARCSignShop/`
-3. 官方价目在市场经济：`plugins/ARCMarketEconomy/official_prices.yml`
+将 `endstone_arc_sign_shop-1.0.1-*.whl` 放入服务器 `plugins` 目录后重启。数据目录：`plugins/ARCSignShop/`。

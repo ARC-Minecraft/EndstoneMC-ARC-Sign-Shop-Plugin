@@ -273,9 +273,23 @@ SHOP_API_NOT_FOUND=商店不存在
 SHOP_API_BUYER_OFFLINE=买家不在线
 SHOP_API_PURCHASE_ERROR=购买时出现系统错误
 # 官方定价模式
-SHOP_TYPE_OFFICIAL_BUTTON=§d官方自动定价商店§r：从官方定价列表选物品，系统自动定价（可出售/回收/二合一）
-SHOP_TYPE_OFFICIAL_SELL_BUTTON=§d官方定价·出售§r：从官方定价列表选择物品，系统自动定价（动态波动）
-SHOP_TYPE_OFFICIAL_BUY_BUTTON=§d官方定价·收购§r：从官方定价列表选择物品，系统自动定价（动态波动）
+SHOP_TYPE_OFFICIAL_BUTTON=§d官方商店§r：出售+回收二合一（可管理关闭单侧）；自动/手动定价
+SHOP_TYPE_OFFICIAL_SELL_BUTTON=§d官方手动·仅出售§r：固定单价，系统无限库存
+SHOP_TYPE_OFFICIAL_BUY_BUTTON=§d官方手动·仅回收§r：固定单价，系统无限预算
+SHOP_OFFICIAL_MANUAL_TYPE_TITLE=§6官方商店 — 手动定价
+SHOP_OFFICIAL_MANUAL_TYPE_CONTENT=§f手动定价为固定单价的系统无限店，请选择仅出售或仅回收：
+SHOP_DISABLE_SELL_BUTTON=§c关闭出售功能§r（降级为仅回收）
+SHOP_DISABLE_BUY_BUTTON=§c关闭回收功能§r（降级为仅出售）
+SHOP_ENABLE_SELL_BUTTON=§a开启出售功能§r（升级为二合一）
+SHOP_ENABLE_BUY_BUTTON=§a开启回收功能§r（升级为二合一）
+SHOP_TRADE_MODE_TITLE=§6交易功能
+SHOP_TRADE_MODE_DISABLED_SELL=§a已关闭出售功能，本店现为 §b仅回收
+SHOP_TRADE_MODE_DISABLED_BUY=§a已关闭回收功能，本店现为 §e仅出售
+SHOP_TRADE_MODE_ENABLED_SELL=§a已开启出售功能，本店恢复为 §a出售+回收二合一
+SHOP_TRADE_MODE_ENABLED_BUY=§a已开启回收功能，本店恢复为 §a出售+回收二合一
+SHOP_TRADE_MODE_CHANGED=§a商店交易模式已更新
+SHOP_TRADE_MODE_ERROR=§c更新商店交易模式失败
+SHOP_TRADE_MODE_OFFICIAL_ONLY=§c仅官方自动定价商店可切换出售/回收功能
 SHOP_OFFICIAL_MODE_TITLE=§6官方自动定价 — 选择模式
 SHOP_OFFICIAL_MODE_CONTENT=§f请选择商店模式：\n§a出售回收二合一§f最常用，玩家交互时再选买卖
 SHOP_OFFICIAL_MODE_BOTH_BUTTON=§a出售回收二合一§r：一个商店同时支持购买与回收
@@ -346,21 +360,23 @@ SHOP_BUY_SUSPENDED_DETAIL=§c回收价格已超过出售价格，回收功能暂
 SHOP_BUY_SUSPENDED_MSG=§c该物品回收价格已超过出售价格，回收功能暂时停止！§7请等待价格恢复。
 # 快速设置自动定价商店
 QS_OP_ONLY=§c只有 OP 可以使用快速设置指令
-QS_USAGE=§c用法: /ss qs start [sell|buy] 或 /ss qs stop
-QS_MODE_SELL=官方出售
-QS_MODE_BUY=官方收购
+QS_USAGE=§c用法: /ss qs start [both|sell|buy] 或 /ss qs stop\n§7默认 both：出售回收二合一 + 自动定价
+QS_MODE_BOTH=官方二合一（出售+回收）
+QS_MODE_SELL=官方仅出售
+QS_MODE_BUY=官方仅回收
 QS_ALREADY_ACTIVE=§e你已在快速设置模式中。手持物品右键木牌，或 /ss qs stop 结束
 QS_NOT_ACTIVE=§c你当前不在快速设置模式
 QS_START_SUCCESS=§a已进入{0}快速设置模式。\n§f手持物品右键木牌即可创建。\n§e输入 /ss qs stop 结束
 QS_STOP_SUCCESS=§a已退出自动定价商店快速设置模式
 QS_NO_HELD_ITEM=§c请手持要上架的物品后再交互木牌
 QS_NO_OFFICIAL_PRICE=§c物品 §e{0} §c没有官方定价，无法快速设置为自动定价商店
-QS_PLACEHOLDER_PRICE=§e物品 §f{0} §e尚未配置官方定价，暂以 §c99999 §e作为出售价；回收需配置 buy 价后开放。请在 official_prices.yml 补充后执行 /market reload
+QS_PLACEHOLDER_PRICE=§e物品 §f{0} §e不在价目中，已自动写入市场经济（sell/buy=0）。请稍后在 official_prices.yml 改价并 /market reload
 QS_CONTINUE_HINT=§7仍在快速设置中：可继续手持物品点木牌，或输入 /ss qs stop 结束
 
 # 木牌文案
 SIGN_TITLE_PLAYER_SELL=[玩家商店-出售]
 SIGN_TITLE_PLAYER_BUY=[玩家商店-收购]
+SIGN_TITLE_OFFICIAL_BOTH=[官方商店]
 SIGN_TITLE_OFFICIAL_SELL=[官方商店-出售]
 SIGN_TITLE_OFFICIAL_BUY=[官方商店-收购]
 SIGN_TITLE_BARTER=[玩家交易]
@@ -371,8 +387,8 @@ SIGN_LINE_STOCK=库存：{0}
 
 # 官方定价方式
 SHOP_OFFICIAL_PRICING_MODE_TITLE=§6官方商店 — 选择定价方式
-SHOP_OFFICIAL_PRICING_MODE_CONTENT=§f自动定价由弧光市场经济插件提供动态价；手动定价由你自行填写固定单价（仍为系统无限商店）。
-SHOP_OFFICIAL_PRICING_AUTO_BUTTON=§a自动定价§r（市场经济动态价）
+SHOP_OFFICIAL_PRICING_MODE_CONTENT=§f自动定价：默认创建 §a出售+回收二合一§f（市场动态价）。\n手动定价：固定单价的仅出售或仅回收系统店。
+SHOP_OFFICIAL_PRICING_AUTO_BUTTON=§a自动定价§r（二合一 + 市场经济）
 SHOP_OFFICIAL_PRICING_MANUAL_BUTTON=§e手动定价§r（自填固定单价）
 SHOP_OFFICIAL_PRICING_AUTO_DISABLED=§c自动定价不可用§r（未安装 arc_market_economy）
 SHOP_MARKET_REQUIRED=§c需要安装并启用弧光市场经济插件 (arc_market_economy) 才能使用自动定价

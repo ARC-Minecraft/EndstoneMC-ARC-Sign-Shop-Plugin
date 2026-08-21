@@ -149,21 +149,23 @@ SHOP_MANAGE_DELNS_PANEL_ERROR=§cFailed to show namespace delete panel
 SHOP_MANAGE_DELNS_USAGE=§cUsage: /ssmanage delns [namespace]
 # Quick setup official auto-pricing shops
 QS_OP_ONLY=§cOnly OP can use quick setup
-QS_USAGE=§cUsage: /ss qs start [sell|buy] or /ss qs stop
-QS_MODE_SELL=official sell
-QS_MODE_BUY=official buy
+QS_USAGE=§cUsage: /ss qs start [both|sell|buy] or /ss qs stop\n§7Default both: sell+buy combo + auto pricing
+QS_MODE_BOTH=official both (sell+buy)
+QS_MODE_SELL=official sell-only
+QS_MODE_BUY=official buy-only
 QS_ALREADY_ACTIVE=§eAlready in quick setup. Hold an item and right-click a sign, or /ss qs stop
 QS_NOT_ACTIVE=§cYou are not in quick setup mode
 QS_START_SUCCESS=§aEntered {0} quick setup.\n§fHold an item and right-click a sign.\n§eType /ss qs stop to exit
 QS_STOP_SUCCESS=§aExited auto-pricing shop quick setup
 QS_NO_HELD_ITEM=§cHold the item you want to list before interacting with a sign
 QS_NO_OFFICIAL_PRICE=§cItem §e{0} §chas no official price and cannot be used for quick setup
-QS_PLACEHOLDER_PRICE=§eItem §f{0} §ehas no official price yet; temporary sell price is §c99999§e. Recycle opens after you add a buy price in official_prices.yml and run /market reload
+QS_PLACEHOLDER_PRICE=§eItem §f{0} §ewas missing from the catalog and was auto-added (sell/buy=0). Edit official_prices.yml then /market reload
 QS_CONTINUE_HINT=§7Still in quick setup: hold an item and click another sign, or /ss qs stop
 
 # Sign text
 SIGN_TITLE_PLAYER_SELL=[Player-Sell]
 SIGN_TITLE_PLAYER_BUY=[Player-Buy]
+SIGN_TITLE_OFFICIAL_BOTH=[Official]
 SIGN_TITLE_OFFICIAL_SELL=[Official-Sell]
 SIGN_TITLE_OFFICIAL_BUY=[Official-Buy]
 SIGN_TITLE_BARTER=[Player-Trade]
@@ -175,9 +177,26 @@ SHOP_NOT_SIGN=§cThat is §e{0}§c. Use a sign to create a shop!
 
 # Official pricing mode
 SHOP_OFFICIAL_PRICING_MODE_TITLE=§6Official Shop — Pricing Mode
-SHOP_OFFICIAL_PRICING_MODE_CONTENT=§fAuto pricing uses ARC Market Economy dynamic prices; manual pricing lets you set a fixed unit price (still a system infinite shop).
-SHOP_OFFICIAL_PRICING_AUTO_BUTTON=§aAuto pricing§r (market economy)
+SHOP_OFFICIAL_PRICING_MODE_CONTENT=§fAuto pricing creates a sell+buy combo shop (market prices).\nManual pricing: fixed-price sell-only or buy-only system shops.
+SHOP_OFFICIAL_PRICING_AUTO_BUTTON=§aAuto pricing§r (both + market)
 SHOP_OFFICIAL_PRICING_MANUAL_BUTTON=§eManual pricing§r (fixed unit price)
 SHOP_OFFICIAL_PRICING_AUTO_DISABLED=§cAuto pricing unavailable§r (arc_market_economy not installed)
+SHOP_TYPE_OFFICIAL_BUTTON=§dOfficial Shop§r: sell+buy combo (can disable one side later)
+SHOP_OFFICIAL_MANUAL_TYPE_TITLE=§6Official Shop — Manual
+SHOP_OFFICIAL_MANUAL_TYPE_CONTENT=§fPick sell-only or buy-only for a fixed-price infinite system shop:
+SHOP_TYPE_OFFICIAL_SELL_BUTTON=§dManual sell-only§r (fixed price, infinite stock)
+SHOP_TYPE_OFFICIAL_BUY_BUTTON=§dManual buy-only§r (fixed price, infinite budget)
+SHOP_DISABLE_SELL_BUTTON=§cDisable selling§r (downgrade to buy-only)
+SHOP_DISABLE_BUY_BUTTON=§cDisable buying§r (downgrade to sell-only)
+SHOP_ENABLE_SELL_BUTTON=§aEnable selling§r (upgrade to both)
+SHOP_ENABLE_BUY_BUTTON=§aEnable buying§r (upgrade to both)
+SHOP_TRADE_MODE_TITLE=§6Trade Mode
+SHOP_TRADE_MODE_DISABLED_SELL=§aSelling disabled — shop is now §bbuy-only
+SHOP_TRADE_MODE_DISABLED_BUY=§aBuying disabled — shop is now §esell-only
+SHOP_TRADE_MODE_ENABLED_SELL=§aSelling enabled — shop is now §asell+buy
+SHOP_TRADE_MODE_ENABLED_BUY=§aBuying enabled — shop is now §asell+buy
+SHOP_TRADE_MODE_CHANGED=§aShop trade mode updated
+SHOP_TRADE_MODE_ERROR=§cFailed to update shop trade mode
+SHOP_TRADE_MODE_OFFICIAL_ONLY=§cOnly official auto-priced shops can toggle sell/buy
 SHOP_MARKET_REQUIRED=§cInstall and enable ARC Market Economy (arc_market_economy) for auto pricing
 SHOP_MANAGE_PRICES_MARKET_HINT=§7Use /market prices|reload|reset for market admin

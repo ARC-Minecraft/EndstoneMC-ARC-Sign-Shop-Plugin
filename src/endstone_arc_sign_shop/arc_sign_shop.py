@@ -24,7 +24,7 @@ class ARCSignShopPlugin(Plugin):
     commands = {
         "ss": {
             "description": "Sign shop commands",
-            "usages": ["/ss", "/ss qs start", "/ss qs start sell", "/ss qs start buy", "/ss qs stop"],
+            "usages": ["/ss", "/ss qs start", "/ss qs start both", "/ss qs start sell", "/ss qs start buy", "/ss qs stop"],
             "permissions": ["arc_sign_shop.command.ss"],
         },
         "ssmanage": {
@@ -43,7 +43,7 @@ class ARCSignShopPlugin(Plugin):
     def __init__(self):
         super().__init__()
         self.setting_shop_player = {}  # 玩家名 -> 商店设置数据
-        self.quick_setup_players = {}  # 玩家名 -> 'sell'|'buy' 快速设置官方定价模式
+        self.quick_setup_players = {}  # 玩家名 -> 'both'|'sell'|'buy'（默认 both）
         self.CHUNK_SIZE = 16  # 区块大小，用于优化查询
     
     def _safe_log(self, level: str, message: str):
@@ -367,12 +367,17 @@ class ARCSignShopPlugin(Plugin):
         if action == "start":
             if not self._require_market(player):
                 return True
-            mode = "sell"
-            if len(args) > 1 and args[1].lower() in ("sell", "buy"):
+            mode = "both"
+            if len(args) > 1 and args[1].lower() in ("both", "sell", "buy"):
                 mode = args[1].lower()
             self.quick_setup_players[player.name] = mode
             self.setting_shop_player.pop(player.name, None)
-            mode_text = self.language_manager.GetText("QS_MODE_SELL" if mode == "sell" else "QS_MODE_BUY")
+            mode_key = {
+                "both": "QS_MODE_BOTH",
+                "sell": "QS_MODE_SELL",
+                "buy": "QS_MODE_BUY",
+            }.get(mode, "QS_MODE_BOTH")
+            mode_text = self.language_manager.GetText(mode_key)
             player.send_message(
                 self.language_manager.GetText("QS_START_SUCCESS").format(mode_text).replace('\\n', '\n')
             )
@@ -431,7 +436,7 @@ class ARCSignShopPlugin(Plugin):
         return f'minecraft:{item_type_id}'
 
     def _handle_quick_setup_interact(self, player, block) -> None:
-        """快速设置：手持物品右键木牌，创建官方出售或官方收购商店。"""
+        """快速设置：手持物品右键木牌，默认创建官方自动定价二合一商店。"""
         if not self._require_market(player):
             return
         held_item = self._get_held_item_info(player)
@@ -447,23 +452,28 @@ class ARCSignShopPlugin(Plugin):
             player.send_message(self.language_manager.GetText("QS_NO_HELD_ITEM"))
             return
 
-        shop_type = self.quick_setup_players.get(player.name, "sell")
-        if shop_type not in ("sell", "buy"):
-            shop_type = "sell"
+        shop_type = self.quick_setup_players.get(player.name, "both")
+        if shop_type not in ("both", "sell", "buy"):
+            shop_type = "both"
 
-        using_placeholder = not (self._get_market() and self._get_market().api_has_price(item_type))
-        unit_price = self._mkt_final_price(item_type, shop_type, 0)
-        if unit_price is None or unit_price <= 0:
-            # buy 未配置时也给占位：出售价逻辑在 PriceManager；回收暂用出售占位价的一半不适用，直接 99999
-            if shop_type == "buy" and using_placeholder:
-                unit_price = getattr(self._get_market(), "PLACEHOLDER_SELL_PRICE", 99999) if self._get_market() else 99999
-            else:
-                player.send_message(self.language_manager.GetText("SHOP_OFFICIAL_PRICE_ERROR"))
-                return
+        mkt = self._get_market()
+        was_missing = not (mkt and mkt.api_has_price(item_type))
+        if mkt and hasattr(mkt, "api_ensure_item"):
+            mkt.api_ensure_item(item_type, sell=0, buy=0)
+
+        # 二合一口价快照用出售价；允许 0（待配置）
+        price_side = "sell" if shop_type == "both" else shop_type
+        unit_price = self._mkt_final_price(item_type, price_side, 0)
+        if unit_price is None:
+            if shop_type == "buy":
+                # 回收暂停时仍可用出售价占位，避免无法建店
+                unit_price = self._mkt_final_price(item_type, "sell", 0)
+            if unit_price is None:
+                unit_price = 0
 
         display_name = (
             held_item.get('name')
-            if using_placeholder and held_item.get('name')
+            if was_missing and held_item.get('name')
             else self._mkt_display_name(item_type)
         )
         item_info = {
@@ -487,7 +497,7 @@ class ARCSignShopPlugin(Plugin):
         self._handle_shop_creation(player, block)
         self.setting_shop_player.pop(player.name, None)
         if player.name in self.quick_setup_players:
-            if using_placeholder:
+            if was_missing:
                 player.send_message(
                     self.language_manager.GetText("QS_PLACEHOLDER_PRICE").format(display_name)
                 )
@@ -867,7 +877,7 @@ class ARCSignShopPlugin(Plugin):
             player.send_message(self.language_manager.GetText("SHOP_PANEL_ERROR"))
 
     def _show_shop_type_selection_panel(self, player):
-        """显示商店类型：玩家出售/收购/交易，OP 另有官方出售/收购。"""
+        """显示商店类型：玩家出售/收购/交易，OP 另有官方商店（默认二合一自动定价）。"""
         try:
             type_panel = ActionForm(
                 title=self.language_manager.GetText("SHOP_TYPE_SELECT_TITLE"),
@@ -887,12 +897,8 @@ class ARCSignShopPlugin(Plugin):
             )
             if getattr(player, 'is_op', False):
                 type_panel.add_button(
-                    self.language_manager.GetText("SHOP_TYPE_OFFICIAL_SELL_BUTTON"),
-                    on_click=lambda sender: self._show_official_pricing_mode_panel(sender, "sell")
-                )
-                type_panel.add_button(
-                    self.language_manager.GetText("SHOP_TYPE_OFFICIAL_BUY_BUTTON"),
-                    on_click=lambda sender: self._show_official_pricing_mode_panel(sender, "buy")
+                    self.language_manager.GetText("SHOP_TYPE_OFFICIAL_BUTTON"),
+                    on_click=lambda sender: self._show_official_pricing_mode_panel(sender)
                 )
             type_panel.add_button(
                 self.language_manager.GetText("SHOP_BACK_BUTTON"),
@@ -903,8 +909,8 @@ class ARCSignShopPlugin(Plugin):
             self._safe_log('error', f"[ARCSignShop] Show shop type selection panel error: {str(e)}")
             player.send_message(self.language_manager.GetText("SHOP_PANEL_ERROR"))
 
-    def _show_official_pricing_mode_panel(self, player, shop_type: str):
-        """官方出售/收购：选择自动定价（市场经济）或手动定价。"""
+    def _show_official_pricing_mode_panel(self, player):
+        """官方商店：自动定价默认二合一；手动定价可选仅出售/仅回收无限店。"""
         try:
             panel = ActionForm(
                 title=self.language_manager.GetText("SHOP_OFFICIAL_PRICING_MODE_TITLE"),
@@ -914,7 +920,7 @@ class ARCSignShopPlugin(Plugin):
             if mkt is not None:
                 panel.add_button(
                     self.language_manager.GetText("SHOP_OFFICIAL_PRICING_AUTO_BUTTON"),
-                    on_click=lambda sender, st=shop_type: self._show_official_price_item_selection(sender, st)
+                    on_click=lambda sender: self._show_official_price_item_selection(sender, "both")
                 )
             else:
                 panel.add_button(
@@ -923,10 +929,9 @@ class ARCSignShopPlugin(Plugin):
                         self.language_manager.GetText("SHOP_MARKET_REQUIRED")
                     )
                 )
-            manual_key = "sell_infinite" if shop_type == "sell" else "buy_infinite"
             panel.add_button(
                 self.language_manager.GetText("SHOP_OFFICIAL_PRICING_MANUAL_BUTTON"),
-                on_click=lambda sender, mk=manual_key: self._show_item_selection_panel(sender, mk)
+                on_click=lambda sender: self._show_official_manual_type_panel(sender)
             )
             panel.add_button(
                 self.language_manager.GetText("SHOP_BACK_BUTTON"),
@@ -935,6 +940,30 @@ class ARCSignShopPlugin(Plugin):
             player.send_form(panel)
         except Exception as e:
             self._safe_log('error', f"[ARCSignShop] Official pricing mode panel error: {e}")
+            player.send_message(self.language_manager.GetText("SHOP_PANEL_ERROR"))
+
+    def _show_official_manual_type_panel(self, player):
+        """手动定价系统店：仅出售或仅回收（固定单价无限）。"""
+        try:
+            panel = ActionForm(
+                title=self.language_manager.GetText("SHOP_OFFICIAL_MANUAL_TYPE_TITLE"),
+                content=self.language_manager.GetText("SHOP_OFFICIAL_MANUAL_TYPE_CONTENT")
+            )
+            panel.add_button(
+                self.language_manager.GetText("SHOP_TYPE_OFFICIAL_SELL_BUTTON"),
+                on_click=lambda sender: self._show_item_selection_panel(sender, "sell_infinite")
+            )
+            panel.add_button(
+                self.language_manager.GetText("SHOP_TYPE_OFFICIAL_BUY_BUTTON"),
+                on_click=lambda sender: self._show_item_selection_panel(sender, "buy_infinite")
+            )
+            panel.add_button(
+                self.language_manager.GetText("SHOP_BACK_BUTTON"),
+                on_click=lambda sender: self._show_official_pricing_mode_panel(sender)
+            )
+            player.send_form(panel)
+        except Exception as e:
+            self._safe_log('error', f"[ARCSignShop] Official manual type panel error: {e}")
             player.send_message(self.language_manager.GetText("SHOP_PANEL_ERROR"))
 
     def _show_item_selection_panel(self, player, shop_type="sell", give_item=None):
@@ -1342,33 +1371,8 @@ class ARCSignShopPlugin(Plugin):
         return data
 
     def _show_official_mode_selection_panel(self, player):
-        """官方自动定价：选择仅出售 / 仅回收 / 出售回收二合一"""
-        try:
-            mode_panel = ActionForm(
-                title=self.language_manager.GetText("SHOP_OFFICIAL_MODE_TITLE"),
-                content=self.language_manager.GetText("SHOP_OFFICIAL_MODE_CONTENT")
-            )
-            # 二合一优先（最常用）
-            mode_panel.add_button(
-                self.language_manager.GetText("SHOP_OFFICIAL_MODE_BOTH_BUTTON"),
-                on_click=lambda sender: self._show_official_price_item_selection(sender, "both", True)
-            )
-            mode_panel.add_button(
-                self.language_manager.GetText("SHOP_OFFICIAL_MODE_SELL_BUTTON"),
-                on_click=lambda sender: self._show_official_price_item_selection(sender, "sell", True)
-            )
-            mode_panel.add_button(
-                self.language_manager.GetText("SHOP_OFFICIAL_MODE_BUY_BUTTON"),
-                on_click=lambda sender: self._show_official_price_item_selection(sender, "buy", True)
-            )
-            mode_panel.add_button(
-                self.language_manager.GetText("SHOP_BACK_BUTTON"),
-                on_click=lambda sender: self._show_shop_type_selection_panel(sender)
-            )
-            player.send_form(mode_panel)
-        except Exception as e:
-            self._safe_log('error', f"[ARCSignShop] Show official mode selection error: {str(e)}")
-            player.send_message(self.language_manager.GetText("SHOP_PANEL_ERROR"))
+        """兼容旧入口：官方自动定价统一为二合一。"""
+        self._show_official_price_item_selection(player, "both")
 
     def _official_item_type_match_keys(self, item_type_id: str) -> set:
         """兼容 minecraft:diamond / diamond 的匹配键集合"""
@@ -1431,17 +1435,13 @@ class ARCSignShopPlugin(Plugin):
             price_text = f"{final_price}({price})"
         return f"{display_name} - {self.language_manager.GetText('SHOP_OFFICIAL_BUY_PRICE')}{price_text}"
 
-    def _show_official_price_item_selection(self, player, shop_type="sell", from_mode_panel=False):
-        """官方定价：先选分类（含背包内物品），再进入该类物品列表"""
+    def _show_official_price_item_selection(self, player, shop_type="both", from_mode_panel=False):
+        """官方定价：先选分类（含背包内物品），再进入该类物品列表；默认二合一。"""
         mkt = self._require_market(player)
         if not mkt:
             return
         try:
-            back_handler = (
-                (lambda sender: self._show_official_mode_selection_panel(sender))
-                if from_mode_panel
-                else (lambda sender: self._show_shop_type_selection_panel(sender))
-            )
+            back_handler = lambda sender: self._show_official_pricing_mode_panel(sender)
             priced_items = self._mkt_list_items()
             if not priced_items:
                 no_items_panel = ActionForm(
@@ -1623,11 +1623,11 @@ class ARCSignShopPlugin(Plugin):
                         sender.send_form(result_form)
                         return
 
-                    # 计算最终价格（二合一用出售价作为 unit_price 快照）
+                    # 计算最终价格（二合一用出售价作为 unit_price 快照；允许 0=待配置）
                     if shop_type == "both":
                         sell_price = self._mkt_final_price(item_type, 'sell', discount_percent)
                         buy_price = self._mkt_final_price(item_type, 'buy', discount_percent)
-                        if sell_price is None or sell_price <= 0:
+                        if sell_price is None:
                             calculated_price = None
                         else:
                             calculated_price = sell_price
@@ -1636,7 +1636,7 @@ class ARCSignShopPlugin(Plugin):
                         calculated_price = self._mkt_final_price(item_type, shop_type, discount_percent)
                         setup_buy_price = None
 
-                    if calculated_price is None or calculated_price <= 0:
+                    if calculated_price is None:
                         result_form = ActionForm(
                             title=self.language_manager.GetText("SHOP_RESULT_TITLE"),
                             content=self.language_manager.GetText("SHOP_OFFICIAL_PRICE_ERROR")
@@ -2805,9 +2805,12 @@ class ARCSignShopPlugin(Plugin):
             return [title, line2, line3, line4]
 
         if pricing_mode == 'official' or is_infinite:
-            title = self.language_manager.GetText(
-                "SIGN_TITLE_OFFICIAL_SELL" if shop_type == 'sell' else "SIGN_TITLE_OFFICIAL_BUY"
-            )
+            if shop_type == 'both':
+                title = self.language_manager.GetText("SIGN_TITLE_OFFICIAL_BOTH")
+            elif shop_type == 'sell':
+                title = self.language_manager.GetText("SIGN_TITLE_OFFICIAL_SELL")
+            else:
+                title = self.language_manager.GetText("SIGN_TITLE_OFFICIAL_BUY")
         else:
             title = self.language_manager.GetText(
                 "SIGN_TITLE_PLAYER_SELL" if shop_type == 'sell' else "SIGN_TITLE_PLAYER_BUY"
@@ -3525,6 +3528,37 @@ class ARCSignShopPlugin(Plugin):
                             self.language_manager.GetText("SHOP_COLLECT_ITEMS_BUTTON"),
                             on_click=lambda sender: self._show_collect_items_panel(sender, shop_data, from_all_shops)
                         )
+
+            # 官方自动定价店：可关闭/开启出售或回收（二合一 ↔ 单功能）
+            pricing_mode = shop_data.get('pricing_mode', 'manual')
+            if pricing_mode == 'official' and shop_type in ('both', 'sell', 'buy'):
+                if shop_type == 'both':
+                    manage_panel.add_button(
+                        self.language_manager.GetText("SHOP_DISABLE_SELL_BUTTON"),
+                        on_click=lambda sender: self._change_official_trade_mode(
+                            sender, shop_data, 'buy', from_all_shops
+                        )
+                    )
+                    manage_panel.add_button(
+                        self.language_manager.GetText("SHOP_DISABLE_BUY_BUTTON"),
+                        on_click=lambda sender: self._change_official_trade_mode(
+                            sender, shop_data, 'sell', from_all_shops
+                        )
+                    )
+                elif shop_type == 'sell':
+                    manage_panel.add_button(
+                        self.language_manager.GetText("SHOP_ENABLE_BUY_BUTTON"),
+                        on_click=lambda sender: self._change_official_trade_mode(
+                            sender, shop_data, 'both', from_all_shops
+                        )
+                    )
+                else:  # buy
+                    manage_panel.add_button(
+                        self.language_manager.GetText("SHOP_ENABLE_SELL_BUTTON"),
+                        on_click=lambda sender: self._change_official_trade_mode(
+                            sender, shop_data, 'both', from_all_shops
+                        )
+                    )
             
             # 删除商店按钮
             manage_panel.add_button(
@@ -3542,6 +3576,53 @@ class ARCSignShopPlugin(Plugin):
         except Exception as e:
             self._safe_log('error', f"[ARCSignShop] Show shop manage panel error: {str(e)}")
             player.send_message(self.language_manager.GetText("SHOP_MANAGE_PANEL_ERROR"))
+
+    def _change_official_trade_mode(self, player, shop_data, new_type: str, from_all_shops=False):
+        """官方店在 both / sell / buy 间切换（关闭或重新开启出售/回收）。"""
+        try:
+            if new_type not in ("both", "sell", "buy"):
+                player.send_message(self.language_manager.GetText("SHOP_TRADE_MODE_ERROR"))
+                return
+            if shop_data.get("pricing_mode", "manual") != "official":
+                player.send_message(self.language_manager.GetText("SHOP_TRADE_MODE_OFFICIAL_ONLY"))
+                return
+            old_type = shop_data.get("shop_type", "sell")
+            if old_type == new_type:
+                self._show_shop_manage_panel(player, shop_data, from_all_shops)
+                return
+            self.db_manager.update(
+                table="sign_shops",
+                data={"shop_type": new_type},
+                where="id = ?",
+                params=(shop_data["id"],),
+            )
+            updated = self._get_shop_by_id(shop_data["id"])
+            if not updated:
+                player.send_message(self.language_manager.GetText("SHOP_TRADE_MODE_ERROR"))
+                return
+            self._refresh_shop_sign_by_data(updated)
+            msg_key = {
+                ("both", "sell"): "SHOP_TRADE_MODE_DISABLED_BUY",
+                ("both", "buy"): "SHOP_TRADE_MODE_DISABLED_SELL",
+                ("sell", "both"): "SHOP_TRADE_MODE_ENABLED_BUY",
+                ("buy", "both"): "SHOP_TRADE_MODE_ENABLED_SELL",
+            }.get((old_type, new_type), "SHOP_TRADE_MODE_CHANGED")
+            result = ActionForm(
+                title=self.language_manager.GetText("SHOP_TRADE_MODE_TITLE"),
+                content=self.language_manager.GetText(msg_key),
+            )
+            result.add_button(
+                self.language_manager.GetText("SHOP_BACK_BUTTON"),
+                on_click=lambda s, sd=updated: self._show_shop_manage_panel(s, sd, from_all_shops),
+            )
+            player.send_form(result)
+            self._safe_log(
+                "info",
+                f"[ARCSignShop] Shop {shop_data['id']} trade mode {old_type} -> {new_type} by {player.name}",
+            )
+        except Exception as e:
+            self._safe_log("error", f"[ARCSignShop] Change official trade mode error: {e}")
+            player.send_message(self.language_manager.GetText("SHOP_TRADE_MODE_ERROR"))
 
     def _convert_shop_to_infinite(self, player, shop_data, from_all_shops=False):
         """将商店转换为无限商店（系统商店），仅 OP 可用"""

@@ -347,16 +347,16 @@ SHOP_BUY_SUSPENDED_MSG=§c该物品回收价格已超过出售价格，回收功
 # 快速设置自动定价商店
 QS_OP_ONLY=§c只有 OP 可以使用快速设置指令
 QS_USAGE=§c用法: /ss qs start [sell|buy] 或 /ss qs stop
-QS_ALREADY_ACTIVE=§e你已经处于自动定价商店快速设置模式。手持物品右键按钮即可创建，/ss qs stop 结束
+QS_MODE_SELL=官方出售
+QS_MODE_BUY=官方收购
+QS_ALREADY_ACTIVE=§e你已在快速设置模式中。手持物品右键木牌，或 /ss qs stop 结束
 QS_NOT_ACTIVE=§c你当前不在快速设置模式
-QS_START_SUCCESS=§a已进入{0}快速设置模式。
-§f手持物品右键木牌即可创建。
-§e输入 /ss qs stop 结束
+QS_START_SUCCESS=§a已进入{0}快速设置模式。\n§f手持物品右键木牌即可创建。\n§e输入 /ss qs stop 结束
 QS_STOP_SUCCESS=§a已退出自动定价商店快速设置模式
-QS_NO_HELD_ITEM=§c请手持要上架的物品后再交互按钮
+QS_NO_HELD_ITEM=§c请手持要上架的物品后再交互木牌
 QS_NO_OFFICIAL_PRICE=§c物品 §e{0} §c没有官方定价，无法快速设置为自动定价商店
 QS_PLACEHOLDER_PRICE=§e物品 §f{0} §e尚未配置官方定价，暂以 §c99999 §e作为出售价；回收需配置 buy 价后开放。请在 official_prices.yml 补充后执行 /ssmanage pricereload
-QS_CONTINUE_HINT=§7仍在快速设置中：可继续手持物品点按钮，或输入 /ss qs stop 结束
+QS_CONTINUE_HINT=§7仍在快速设置中：可继续手持物品点木牌，或输入 /ss qs stop 结束
 
 # 木牌文案
 SIGN_TITLE_PLAYER_SELL=[玩家商店-出售]
@@ -368,12 +368,3 @@ SIGN_LINE_ITEM=物品：{0}
 SIGN_LINE_PRICE=价格：{0}
 SIGN_LINE_RATIO=比例：{0}:{1}
 SIGN_LINE_STOCK=库存：{0}
-SHOP_NOT_SIGN=§c你正在交互的是 §e{0} §c，请使用木牌来创建商店！
-QS_USAGE=§c用法: /ss qs start [sell|buy] 或 /ss qs stop
-QS_MODE_SELL=官方出售
-QS_MODE_BUY=官方收购
-QS_START_SUCCESS=§a已进入{0}快速设置模式。
-§f手持物品右键木牌即可创建。
-§e输入 /ss qs stop 结束
-QS_ALREADY_ACTIVE=§e你已在快速设置模式中。手持物品右键木牌，或 /ss qs stop 结束
-QS_CONTINUE_HINT=§7仍在快速设置中：可继续手持物品点木牌，或输入 /ss qs stop 结束

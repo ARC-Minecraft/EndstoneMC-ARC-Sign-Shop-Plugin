@@ -30,12 +30,11 @@ class ARCSignShopPlugin(Plugin):
     commands = {
         "ss": {
             "description": "Sign shop commands",
-            # 与按钮商店 /bs、弧光核心 /connecttoserver 同风格；勿用可选枚举（会注册失败只剩 stop）
+            # 同一字面量勿拆多个重载（会重复注册 qs/start 枚举值，Bedrock 解析后只剩 stop）
+            # 用单个 (start|stop) 枚举 + 可选 mode
             "usages": [
                 "/ss",
-                "/ss qs start",
-                "/ss qs start <mode: str>",
-                "/ss qs stop",
+                "/ss qs (start|stop)<action: SsQsAction> [mode: str]",
             ],
             "permissions": ["arc_sign_shop.command.ss"],
         },

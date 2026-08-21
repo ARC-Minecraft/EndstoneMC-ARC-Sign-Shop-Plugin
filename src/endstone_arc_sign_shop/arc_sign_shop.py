@@ -8,7 +8,13 @@ from endstone.command import Command, CommandSender
 from endstone.event import event_handler, PlayerInteractEvent, BlockBreakEvent
 from endstone.plugin import Plugin
 from endstone.form import ActionForm, ModalForm, Label, TextInput
-from endstone.block import Block, Sign
+from endstone.block import Block
+
+try:
+    # 文档 latest 已有 Sign；当前 PyPI 0.11.9 尚未导出，需兼容
+    from endstone.block import Sign as _SignType
+except ImportError:  # pragma: no cover
+    _SignType = None  # type: ignore[misc, assignment]
 
 from .DatabaseManager import DatabaseManager
 from .LanguageManager import LanguageManager
@@ -2825,7 +2831,7 @@ class ARCSignShopPlugin(Plugin):
         return [title, line2, line3, line4]
 
     def _update_shop_sign_text(self, block: Block = None, shop_data=None, x=None, y=None, z=None, dimension=None) -> bool:
-        """把商店信息写到木牌正面，并打蜡防止玩家编辑。"""
+        """把商店信息写到木牌正面，并尽量打蜡防止玩家编辑。"""
         try:
             if block is None:
                 # 通过坐标在线找方块较困难，创建时一般直接传 block
@@ -2839,13 +2845,42 @@ class ARCSignShopPlugin(Plugin):
             if not shop_data:
                 return False
 
+            lines = self._build_sign_lines(shop_data)
+
+            # 优先：Endstone Sign API（latest 文档；装上后自动启用）
+            if self._try_update_sign_via_api(block, lines):
+                return True
+
+            # 回退：Bedrock /data merge block（当前 0.11.9 无 Sign 类时）
+            if self._try_update_sign_via_data_command(block, lines):
+                return True
+
+            self._safe_log(
+                'warning',
+                "[ARCSignShop] Cannot write sign text: endstone.block.Sign unavailable "
+                "and /data merge fallback failed. Shop still works on interact.",
+            )
+            return False
+        except Exception as e:
+            self._safe_log('error', f"[ARCSignShop] Update sign text error: {str(e)}")
+            return False
+
+    def _try_update_sign_via_api(self, block: Block, lines: list) -> bool:
+        """使用 endstone.block.Sign（若运行时已提供）。"""
+        try:
             state = block.capture_state()
-            if not isinstance(state, Sign):
-                self._safe_log('warning', f"[ARCSignShop] capture_state is not Sign: {type(state)}")
+            is_sign = (_SignType is not None and isinstance(state, _SignType)) or (
+                hasattr(state, "get_side") and hasattr(state, "update")
+            )
+            if not is_sign:
                 return False
 
-            lines = self._build_sign_lines(shop_data)
-            front = state.get_side(Sign.Side.FRONT)
+            # Sign.Side.FRONT == 0；无枚举时直接传 0
+            side_front = 0
+            if _SignType is not None and hasattr(_SignType, "Side"):
+                side_front = getattr(_SignType.Side, "FRONT", 0)
+
+            front = state.get_side(side_front)
             for i in range(4):
                 front.set_line(i, lines[i] if i < len(lines) else "")
             try:
@@ -2857,7 +2892,38 @@ class ARCSignShopPlugin(Plugin):
                 ok = state.update(force=True, apply_physics=False)
             return bool(ok)
         except Exception as e:
-            self._safe_log('error', f"[ARCSignShop] Update sign text error: {str(e)}")
+            self._safe_log('warning', f"[ARCSignShop] Sign API write failed: {e}")
+            return False
+
+    def _bedrock_dimension_id(self, dimension_name: str) -> str:
+        name = (dimension_name or "").strip().lower()
+        if name in ("nether", "the_nether", "minecraft:nether"):
+            return "nether"
+        if name in ("the_end", "end", "minecraft:the_end"):
+            return "the_end"
+        return "overworld"
+
+    def _escape_bedrock_sign_text(self, text: str) -> str:
+        """转义写入 FrontText.Text 的字符串。"""
+        return (text or "").replace("\\", "\\\\").replace('"', '\\"')
+
+    def _try_update_sign_via_data_command(self, block: Block, lines: list) -> bool:
+        """
+        无 Sign API 时用 /data merge block 写正面四行并打蜡。
+        Bedrock FrontText.Text 用 \\n 分隔四行。
+        """
+        try:
+            padded = [(lines[i] if i < len(lines) else "") for i in range(4)]
+            joined = "\\n".join(self._escape_bedrock_sign_text(line) for line in padded)
+            x, y, z = int(block.x), int(block.y), int(block.z)
+            dim = self._bedrock_dimension_id(getattr(getattr(block, "dimension", None), "name", "") or "")
+            # IsWaxed 防止玩家改字
+            nbt = f'{{FrontText:{{Text:"{joined}"}},IsWaxed:1b}}'
+            cmd = f"execute in {dim} run data merge block {x} {y} {z} {nbt}"
+            ok = self.server.dispatch_command(self.server.command_sender, cmd)
+            return bool(ok)
+        except Exception as e:
+            self._safe_log('warning', f"[ARCSignShop] Sign /data merge fallback failed: {e}")
             return False
 
     def _refresh_shop_sign_by_data(self, shop_data) -> None:

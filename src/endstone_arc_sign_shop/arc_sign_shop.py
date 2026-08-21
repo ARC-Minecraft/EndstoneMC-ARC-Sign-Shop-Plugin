@@ -13,7 +13,6 @@ from endstone.block import Block, Sign
 from .DatabaseManager import DatabaseManager
 from .LanguageManager import LanguageManager
 from .SettingManager import SettingManager
-from .PriceManager import PriceManager
 
 
 class ARCSignShopPlugin(Plugin):
@@ -88,9 +87,7 @@ class ARCSignShopPlugin(Plugin):
         # 创建商店相关表
         self._create_shop_tables()
         
-        # 初始化价格管理器（官方定价系统）
-        self.price_manager = PriceManager(self)
-        self.price_manager.load_price_adjustments_from_db(self.db_manager)
+        # 官方自动定价由 arc_market_economy 提供
 
     def on_enable(self) -> None:
         self._safe_log('info', "[ARCSignShop] on_enable is called!")
@@ -174,29 +171,8 @@ class ARCSignShopPlugin(Plugin):
     # ==================== 定时任务 ====================
 
     def _register_scheduled_tasks(self):
-        """注册所有定时任务"""
-        try:
-            scheduler = self.server.scheduler
-            # 每日波动 - 延迟1分钟后首次检查，之后每24小时(1728000tick)执行一次
-            self._daily_task = scheduler.run_task(
-                self, self._daily_fluctuation_task, delay=1200, period=1728000
-            )
-            self._safe_log('info', f"[ARCSignShop] Daily fluctuation task registered (id={self._daily_task.task_id})")
-
-            # 价格恢复 - 每1小时(72000tick)执行一次
-            self._recovery_task = scheduler.run_task(
-                self, self._price_recovery_task, delay=0, period=72000
-            )
-            self._safe_log('info', f"[ARCSignShop] Price recovery task registered (id={self._recovery_task.task_id})")
-
-            # 过期清理 - 延迟5分钟后首次执行，之后每24小时执行一次
-            self._cleanup_task = scheduler.run_task(
-                self, self._cleanup_task_handler, delay=6000, period=1728000
-            )
-            self._safe_log('info', f"[ARCSignShop] Cleanup task registered (id={self._cleanup_task.task_id})")
-
-        except Exception as e:
-            self._safe_log('error', f"[ARCSignShop] Failed to register scheduled tasks: {e}")
+        """定价相关定时任务已迁至 arc_market_economy。"""
+        self._safe_log('info', "[ARCSignShop] No local market scheduled tasks (handled by arc_market_economy)")
 
     def _cancel_scheduled_tasks(self):
         """取消所有定时任务"""
@@ -207,31 +183,9 @@ class ARCSignShopPlugin(Plugin):
         except Exception as e:
             self._safe_log('error', f"[ARCSignShop] Failed to cancel scheduled tasks: {e}")
 
-    def _daily_fluctuation_task(self):
-        """每日波动定时任务"""
-        try:
-            if hasattr(self, 'price_manager') and hasattr(self, 'db_manager'):
-                self.price_manager.check_and_apply_daily_fluctuation(self.db_manager)
-        except Exception as e:
-            self._safe_log('error', f"[ARCSignShop] Daily fluctuation task error: {e}")
 
-    def _price_recovery_task(self):
-        """价格恢复定时任务（每小时）"""
-        try:
-            if hasattr(self, 'price_manager') and hasattr(self, 'db_manager'):
-                self.price_manager.apply_price_recovery(self.db_manager)
-        except Exception as e:
-            self._safe_log('error', f"[ARCSignShop] Price recovery task error: {e}")
 
-    def _cleanup_task_handler(self):
-        """过期数据清理定时任务"""
-        try:
-            if hasattr(self, 'price_manager') and hasattr(self, 'db_manager'):
-                self.price_manager.cleanup_old_trade_volumes(self.db_manager, days=7)
-                self._safe_log('info', "[ARCSignShop] Old trade volumes cleaned up")
-        except Exception as e:
-            self._safe_log('error', f"[ARCSignShop] Cleanup task error: {e}")
-    
+
     def _init_default_settings(self) -> None:
         """初始化默认配置"""
         # 交易税率 (默认5%)
@@ -252,24 +206,6 @@ class ARCSignShopPlugin(Plugin):
             self.setting_manager.SetSetting("trade_tax_enabled", "true")
             self._safe_log('info', "[ARCSignShop] Trade tax enabled by default")
 
-        dynamic_pricing_defaults = {
-            "dynamic_pricing_enabled": "true",
-            "dynamic_pricing_time_window_minutes": "60",
-            "dynamic_pricing_sell_amount_per_percent": "10000",
-            "dynamic_pricing_buy_amount_per_percent": "10000",
-            "dynamic_pricing_max_sell_increase": "0.50",
-            "dynamic_pricing_max_buy_decrease": "0.30",
-            "dynamic_pricing_sell_buy_link_ratio": "0.5",
-            "dynamic_pricing_recovery_rate_per_hour": "0.0002",
-            "daily_fluctuation_enabled": "true",
-            "daily_fluctuation_item_count": "3",
-            "daily_fluctuation_min_percent": "-15",
-            "daily_fluctuation_max_percent": "15",
-            "daily_fluctuation_reset_hour": "0",
-        }
-        for key, value in dynamic_pricing_defaults.items():
-            if self.setting_manager.GetSetting(key) is None:
-                self.setting_manager.SetSetting(key, value)
 
     def _init_economy_plugin(self) -> None:
         """初始化经济插件 - 检查 arc_core 优先，然后 umoney"""
@@ -323,6 +259,86 @@ class ARCSignShopPlugin(Plugin):
         
         return False
 
+
+    def _get_market(self):
+        """获取弧光市场经济插件；未安装返回 None。"""
+        try:
+            return self.server.plugin_manager.get_plugin("arc_market_economy")
+        except Exception:
+            return None
+
+    def _require_market(self, player=None):
+        mkt = self._get_market()
+        if mkt is not None:
+            return mkt
+        msg = self.language_manager.GetText("SHOP_MARKET_REQUIRED")
+        if player is not None:
+            try:
+                player.send_message(msg)
+            except Exception:
+                pass
+        return None
+
+
+    def _mkt_final_price(self, item_type, side, discount_percent=0.0):
+        mkt = self._get_market()
+        if not mkt:
+            return None
+        return mkt.api_get_final_price(item_type, side, discount_percent)
+
+    def _mkt_display_name(self, item_type):
+        mkt = self._get_market()
+        if not mkt:
+            return item_type or "?"
+        return mkt.api_get_display_name(item_type)
+
+    def _mkt_adjustment(self, item_type):
+        mkt = self._get_market()
+        if not mkt:
+            return {
+                'demand_sell_adjust': 0.0, 'demand_buy_adjust': 0.0,
+                'daily_adjust_percent': 0.0, 'sell_link_adjust': 0.0,
+            }
+        return mkt.api_get_adjustment(item_type)
+
+    def _mkt_list_items(self):
+        mkt = self._get_market()
+        return mkt.api_list_priced_items() if mkt else {}
+
+    def _mkt_category_counts(self):
+        mkt = self._get_market()
+        return mkt.api_get_category_counts() if mkt else {}
+
+    def _mkt_categories(self):
+        mkt = self._get_market()
+        return mkt.api_get_categories() if mkt else []
+
+    def _mkt_items_by_category(self, category):
+        mkt = self._get_market()
+        return mkt.api_get_items_by_category(category) if mkt else {}
+
+    def _mkt_base_price(self, item_type, side):
+        mkt = self._get_market()
+        return mkt.api_get_base_price(item_type, side) if mkt else None
+
+    def _notify_market_trade(self, shop_data, quantity, total_amount):
+        """成交成功后通知市场经济插件（仅官方自动定价）。"""
+        try:
+            if shop_data.get('pricing_mode') != 'official':
+                return
+            mkt = self._get_market()
+            if not mkt:
+                return
+            mkt.api_on_trade(
+                shop_data.get('item_type', ''),
+                shop_data.get('shop_type', 'sell'),
+                int(quantity),
+                float(total_amount or 0),
+                source="sign_shop",
+            )
+        except Exception as e:
+            self._safe_log('warning', f"[ARCSignShop] notify market trade failed: {e}")
+
     def on_command(self, sender: CommandSender, command: Command, args: list[str]) -> bool:
         match command.name:
             case "ss":
@@ -349,6 +365,8 @@ class ARCSignShopPlugin(Plugin):
             return True
         action = args[0].lower()
         if action == "start":
+            if not self._require_market(player):
+                return True
             mode = "sell"
             if len(args) > 1 and args[1].lower() in ("sell", "buy"):
                 mode = args[1].lower()
@@ -399,7 +417,7 @@ class ARCSignShopPlugin(Plugin):
         if not item_type_id:
             return None
         held_keys = self._official_item_type_match_keys(item_type_id)
-        for official_type in self.price_manager.official_prices:
+        for official_type in (self._get_market().api_list_priced_items() if self._get_market() else {}):
             if held_keys & self._official_item_type_match_keys(official_type):
                 return official_type
         return None
@@ -414,6 +432,8 @@ class ARCSignShopPlugin(Plugin):
 
     def _handle_quick_setup_interact(self, player, block) -> None:
         """快速设置：手持物品右键木牌，创建官方出售或官方收购商店。"""
+        if not self._require_market(player):
+            return
         held_item = self._get_held_item_info(player)
         if not held_item:
             player.send_message(self.language_manager.GetText("QS_NO_HELD_ITEM"))
@@ -431,12 +451,12 @@ class ARCSignShopPlugin(Plugin):
         if shop_type not in ("sell", "buy"):
             shop_type = "sell"
 
-        using_placeholder = not self.price_manager.has_official_price(item_type)
-        unit_price = self.price_manager.calculate_final_price(item_type, shop_type, 0)
+        using_placeholder = not (self._get_market() and self._get_market().api_has_price(item_type))
+        unit_price = self._mkt_final_price(item_type, shop_type, 0)
         if unit_price is None or unit_price <= 0:
             # buy 未配置时也给占位：出售价逻辑在 PriceManager；回收暂用出售占位价的一半不适用，直接 99999
             if shop_type == "buy" and using_placeholder:
-                unit_price = getattr(self.price_manager, "PLACEHOLDER_SELL_PRICE", 99999)
+                unit_price = getattr(self._get_market(), "PLACEHOLDER_SELL_PRICE", 99999) if self._get_market() else 99999
             else:
                 player.send_message(self.language_manager.GetText("SHOP_OFFICIAL_PRICE_ERROR"))
                 return
@@ -444,7 +464,7 @@ class ARCSignShopPlugin(Plugin):
         display_name = (
             held_item.get('name')
             if using_placeholder and held_item.get('name')
-            else self.price_manager.get_item_display_name(item_type)
+            else self._mkt_display_name(item_type)
         )
         item_info = {
             'type': item_type,
@@ -548,7 +568,7 @@ class ARCSignShopPlugin(Plugin):
             "trade_time": "TEXT NOT NULL"  # 交易时间
         }
         
-        if self.db_manager.create_table("item_trade_volume", trade_volume_fields):
+        if False and self.db_manager.create_table("item_trade_volume", trade_volume_fields):
             self._safe_log('info', "[ARCSignShop] Item trade volume table created successfully")
         else:
             self._safe_log('error', "[ARCSignShop] Failed to create item trade volume table")
@@ -566,7 +586,7 @@ class ARCSignShopPlugin(Plugin):
             "last_updated": "TEXT NOT NULL"  # 最后更新时间
         }
         
-        if self.db_manager.create_table("price_adjustments", price_adjustment_fields):
+        if False and self.db_manager.create_table("price_adjustments", price_adjustment_fields):
             self._safe_log('info', "[ARCSignShop] Price adjustments table created successfully")
         else:
             self._safe_log('error', "[ARCSignShop] Failed to create price adjustments table")
@@ -868,11 +888,11 @@ class ARCSignShopPlugin(Plugin):
             if getattr(player, 'is_op', False):
                 type_panel.add_button(
                     self.language_manager.GetText("SHOP_TYPE_OFFICIAL_SELL_BUTTON"),
-                    on_click=lambda sender: self._show_official_price_item_selection(sender, "sell")
+                    on_click=lambda sender: self._show_official_pricing_mode_panel(sender, "sell")
                 )
                 type_panel.add_button(
                     self.language_manager.GetText("SHOP_TYPE_OFFICIAL_BUY_BUTTON"),
-                    on_click=lambda sender: self._show_official_price_item_selection(sender, "buy")
+                    on_click=lambda sender: self._show_official_pricing_mode_panel(sender, "buy")
                 )
             type_panel.add_button(
                 self.language_manager.GetText("SHOP_BACK_BUTTON"),
@@ -881,6 +901,40 @@ class ARCSignShopPlugin(Plugin):
             player.send_form(type_panel)
         except Exception as e:
             self._safe_log('error', f"[ARCSignShop] Show shop type selection panel error: {str(e)}")
+            player.send_message(self.language_manager.GetText("SHOP_PANEL_ERROR"))
+
+    def _show_official_pricing_mode_panel(self, player, shop_type: str):
+        """官方出售/收购：选择自动定价（市场经济）或手动定价。"""
+        try:
+            panel = ActionForm(
+                title=self.language_manager.GetText("SHOP_OFFICIAL_PRICING_MODE_TITLE"),
+                content=self.language_manager.GetText("SHOP_OFFICIAL_PRICING_MODE_CONTENT")
+            )
+            mkt = self._get_market()
+            if mkt is not None:
+                panel.add_button(
+                    self.language_manager.GetText("SHOP_OFFICIAL_PRICING_AUTO_BUTTON"),
+                    on_click=lambda sender, st=shop_type: self._show_official_price_item_selection(sender, st)
+                )
+            else:
+                panel.add_button(
+                    self.language_manager.GetText("SHOP_OFFICIAL_PRICING_AUTO_DISABLED"),
+                    on_click=lambda sender: sender.send_message(
+                        self.language_manager.GetText("SHOP_MARKET_REQUIRED")
+                    )
+                )
+            manual_key = "sell_infinite" if shop_type == "sell" else "buy_infinite"
+            panel.add_button(
+                self.language_manager.GetText("SHOP_OFFICIAL_PRICING_MANUAL_BUTTON"),
+                on_click=lambda sender, mk=manual_key: self._show_item_selection_panel(sender, mk)
+            )
+            panel.add_button(
+                self.language_manager.GetText("SHOP_BACK_BUTTON"),
+                on_click=lambda sender: self._show_shop_type_selection_panel(sender)
+            )
+            player.send_form(panel)
+        except Exception as e:
+            self._safe_log('error', f"[ARCSignShop] Official pricing mode panel error: {e}")
             player.send_message(self.language_manager.GetText("SHOP_PANEL_ERROR"))
 
     def _show_item_selection_panel(self, player, shop_type="sell", give_item=None):
@@ -1348,10 +1402,10 @@ class ARCSignShopPlugin(Plugin):
 
     def _format_official_item_button(self, item_type: str, prices: dict, shop_type: str) -> str:
         """官方选物列表按钮文案"""
-        display_name = self.price_manager.get_item_display_name(item_type)
+        display_name = self._mkt_display_name(item_type)
         if shop_type == "both":
-            sell_final = self.price_manager.calculate_final_price(item_type, 'sell', 0)
-            buy_final = self.price_manager.calculate_final_price(item_type, 'buy', 0)
+            sell_final = self._mkt_final_price(item_type, 'sell', 0)
+            buy_final = self._mkt_final_price(item_type, 'buy', 0)
             sell_base = prices.get('sell', 0)
             buy_base = prices.get('buy', 0)
             sell_text = f"{sell_final}" if sell_final is not None else f"{sell_base}"
@@ -1363,15 +1417,15 @@ class ARCSignShopPlugin(Plugin):
             )
         if shop_type == "sell":
             price = prices.get('sell', 0)
-            final_price = self.price_manager.calculate_final_price(item_type, 'sell', 0)
-            adj = self.price_manager.get_price_adjustment(item_type)
+            final_price = self._mkt_final_price(item_type, 'sell', 0)
+            adj = self._mkt_adjustment(item_type)
             price_text = f"{price}"
             if adj['daily_adjust_percent'] != 0 or adj['demand_sell_adjust'] != 0:
                 price_text = f"{final_price}({price})"
             return f"{display_name} - {self.language_manager.GetText('SHOP_OFFICIAL_SELL_PRICE')}{price_text}"
         price = prices.get('buy', 0)
-        final_price = self.price_manager.calculate_final_price(item_type, 'buy', 0)
-        adj = self.price_manager.get_price_adjustment(item_type)
+        final_price = self._mkt_final_price(item_type, 'buy', 0)
+        adj = self._mkt_adjustment(item_type)
         price_text = f"{price}"
         if adj['daily_adjust_percent'] != 0 or adj['demand_buy_adjust'] != 0:
             price_text = f"{final_price}({price})"
@@ -1379,13 +1433,16 @@ class ARCSignShopPlugin(Plugin):
 
     def _show_official_price_item_selection(self, player, shop_type="sell", from_mode_panel=False):
         """官方定价：先选分类（含背包内物品），再进入该类物品列表"""
+        mkt = self._require_market(player)
+        if not mkt:
+            return
         try:
             back_handler = (
                 (lambda sender: self._show_official_mode_selection_panel(sender))
                 if from_mode_panel
                 else (lambda sender: self._show_shop_type_selection_panel(sender))
             )
-            priced_items = self.price_manager.get_all_priced_items()
+            priced_items = self._mkt_list_items()
             if not priced_items:
                 no_items_panel = ActionForm(
                     title=self.language_manager.GetText("SHOP_OFFICIAL_PRICE_TITLE"),
@@ -1403,8 +1460,8 @@ class ARCSignShopPlugin(Plugin):
                 t: p for t, p in priced_items.items()
                 if self._priced_item_in_inventory(t, inv_match_keys)
             }
-            category_counts = self.price_manager.get_category_counts()
-            category_order = self.price_manager.get_category_order()
+            category_counts = self._mkt_category_counts()
+            category_order = self._mkt_categories()
 
             category_panel = ActionForm(
                 title=self.language_manager.GetText("SHOP_OFFICIAL_CATEGORY_TITLE"),
@@ -1449,13 +1506,13 @@ class ARCSignShopPlugin(Plugin):
                 if not items:
                     inv_match_keys = self._get_official_inventory_match_keys(player)
                     items = {
-                        t: p for t, p in self.price_manager.get_all_priced_items().items()
+                        t: p for t, p in self._mkt_list_items().items()
                         if self._priced_item_in_inventory(t, inv_match_keys)
                     }
                 title = self.language_manager.GetText("SHOP_OFFICIAL_CATEGORY_INVENTORY_TITLE")
                 content = self.language_manager.GetText("SHOP_OFFICIAL_CATEGORY_INVENTORY_CONTENT")
             else:
-                items = self.price_manager.get_items_by_category(category)
+                items = self._mkt_items_by_category(category)
                 title = self.language_manager.GetText("SHOP_OFFICIAL_CATEGORY_ITEMS_TITLE").format(category)
                 content = self.language_manager.GetText("SHOP_OFFICIAL_CATEGORY_ITEMS_CONTENT").format(category)
 
@@ -1489,13 +1546,13 @@ class ARCSignShopPlugin(Plugin):
     def _show_official_discount_panel(self, player, item_type, prices, shop_type="sell"):
         """显示官方定价折扣设置面板"""
         try:
-            display_name = self.price_manager.get_item_display_name(item_type)
-            adj = self.price_manager.get_price_adjustment(item_type)
+            display_name = self._mkt_display_name(item_type)
+            adj = self._mkt_adjustment(item_type)
 
             sell_base = prices.get('sell', 0)
             buy_base = prices.get('buy', 0)
-            sell_final = self.price_manager.calculate_final_price(item_type, 'sell', 0)
-            buy_final = self.price_manager.calculate_final_price(item_type, 'buy', 0)
+            sell_final = self._mkt_final_price(item_type, 'sell', 0)
+            buy_final = self._mkt_final_price(item_type, 'buy', 0)
 
             if shop_type == "both":
                 info_text = self.language_manager.GetText("SHOP_OFFICIAL_DISCOUNT_INFO_BOTH").format(
@@ -1568,15 +1625,15 @@ class ARCSignShopPlugin(Plugin):
 
                     # 计算最终价格（二合一用出售价作为 unit_price 快照）
                     if shop_type == "both":
-                        sell_price = self.price_manager.calculate_final_price(item_type, 'sell', discount_percent)
-                        buy_price = self.price_manager.calculate_final_price(item_type, 'buy', discount_percent)
+                        sell_price = self._mkt_final_price(item_type, 'sell', discount_percent)
+                        buy_price = self._mkt_final_price(item_type, 'buy', discount_percent)
                         if sell_price is None or sell_price <= 0:
                             calculated_price = None
                         else:
                             calculated_price = sell_price
                         setup_buy_price = buy_price
                     else:
-                        calculated_price = self.price_manager.calculate_final_price(item_type, shop_type, discount_percent)
+                        calculated_price = self._mkt_final_price(item_type, shop_type, discount_percent)
                         setup_buy_price = None
 
                     if calculated_price is None or calculated_price <= 0:
@@ -1682,12 +1739,12 @@ class ARCSignShopPlugin(Plugin):
             item_type = shop_data.get('item_type', '')
             discount_percent = float(shop_data.get('discount_percent', 0) or 0)
             if shop_type == 'both':
-                sell_price = self.price_manager.calculate_final_price(item_type, 'sell', discount_percent)
-                buy_price = self.price_manager.calculate_final_price(item_type, 'buy', discount_percent)
+                sell_price = self._mkt_final_price(item_type, 'sell', discount_percent)
+                buy_price = self._mkt_final_price(item_type, 'buy', discount_percent)
                 sell_text = f"{sell_price}" if sell_price is not None else "?"
                 buy_text = f"{buy_price}" if buy_price is not None else self.language_manager.GetText("SHOP_BUY_SUSPENDED")
                 return self.language_manager.GetText("SHOP_DISPLAY_PRICE_BOTH").format(sell_text, buy_text)
-            final_price = self.price_manager.calculate_final_price(item_type, shop_type, discount_percent)
+            final_price = self._mkt_final_price(item_type, shop_type, discount_percent)
             if final_price is not None:
                 return f"§d{final_price}§r"
             else:
@@ -1854,24 +1911,24 @@ class ARCSignShopPlugin(Plugin):
                 discount_percent = shop_data.get('discount_percent', 0.0)
                 item_type = shop_data.get('item_type', '')
                 if shop_type == 'both':
-                    sell_price = self.price_manager.calculate_final_price(item_type, 'sell', discount_percent)
-                    buy_price = self.price_manager.calculate_final_price(item_type, 'buy', discount_percent)
-                    sell_base = self.price_manager.get_base_price(item_type, 'sell')
-                    buy_base = self.price_manager.get_base_price(item_type, 'buy')
+                    sell_price = self._mkt_final_price(item_type, 'sell', discount_percent)
+                    buy_price = self._mkt_final_price(item_type, 'buy', discount_percent)
+                    sell_base = self._mkt_base_price(item_type, 'sell')
+                    buy_base = self._mkt_base_price(item_type, 'buy')
                     if sell_base is not None and sell_price is not None:
                         shop_info += self.language_manager.GetText("SHOP_DETAIL_BOTH_SELL_PRICE").format(sell_base, sell_price) + "\n"
                     if buy_base is not None:
                         buy_show = buy_price if buy_price is not None else self.language_manager.GetText("SHOP_BUY_SUSPENDED")
                         shop_info += self.language_manager.GetText("SHOP_DETAIL_BOTH_BUY_PRICE").format(buy_base, buy_show) + "\n"
                 else:
-                    display_price = self.price_manager.calculate_final_price(item_type, shop_type, discount_percent)
+                    display_price = self._mkt_final_price(item_type, shop_type, discount_percent)
                     if display_price is not None and display_price != shop_data['unit_price']:
                         shop_info += self.language_manager.GetText("SHOP_DETAIL_CURRENT_PRICE").format(display_price) + "\n"
                     elif display_price is None and shop_type == 'buy':
                         # 回收价反超出售价，回收已暂停
                         shop_info += self.language_manager.GetText("SHOP_BUY_SUSPENDED_DETAIL") + "\n"
-                    adj = self.price_manager.get_price_adjustment(item_type)
-                    base_price = self.price_manager.get_base_price(item_type, shop_type)
+                    adj = self._mkt_adjustment(item_type)
+                    base_price = self._mkt_base_price(item_type, shop_type)
                     if base_price is not None:
                         shop_info += self.language_manager.GetText("SHOP_DETAIL_BASE_PRICE").format(base_price) + "\n"
                     if adj['demand_sell_adjust'] != 0 or adj['demand_buy_adjust'] != 0:
@@ -1972,7 +2029,7 @@ class ARCSignShopPlugin(Plugin):
             item_type = shop_data.get('item_type', '')
             if pricing_mode == 'official':
                 discount_percent = shop_data.get('discount_percent', 0.0)
-                display_price = self.price_manager.calculate_final_price(item_type, shop_type, discount_percent)
+                display_price = self._mkt_final_price(item_type, shop_type, discount_percent)
                 if display_price is None:
                     display_price = shop_data['unit_price']
             else:
@@ -1998,8 +2055,8 @@ class ARCSignShopPlugin(Plugin):
             
             # 官方定价模式：显示价格组成信息
             if pricing_mode == 'official' and shop_type != "barter":
-                adj = self.price_manager.get_price_adjustment(item_type)
-                base_price = self.price_manager.get_base_price(item_type, shop_type)
+                adj = self._mkt_adjustment(item_type)
+                base_price = self._mkt_base_price(item_type, shop_type)
                 if base_price is not None and display_price != base_price:
                     purchase_info += self.language_manager.GetText("SHOP_OFFICIAL_PRICE_BREAKDOWN").format(base_price, display_price) + "\n"
                 if adj['demand_sell_adjust'] != 0 or adj['demand_buy_adjust'] != 0:
@@ -2282,7 +2339,7 @@ class ARCSignShopPlugin(Plugin):
             if pricing_mode == 'official':
                 discount_percent = shop_data.get('discount_percent', 0.0)
                 item_type = shop_data.get('item_type', '')
-                final_unit_price = self.price_manager.calculate_final_price(item_type, shop_type, discount_percent)
+                final_unit_price = self._mkt_final_price(item_type, shop_type, discount_percent)
                 if final_unit_price is None:
                     if shop_type == 'buy':
                         return False, self.language_manager.GetText("SHOP_BUY_SUSPENDED_MSG")
@@ -2298,12 +2355,6 @@ class ARCSignShopPlugin(Plugin):
             # 检查经济插件是否可用
             if not self.economy_plugin:
                 return False, self.language_manager.GetText("SHOP_CORE_PLUGIN_NOT_FOUND")
-            
-            # 官方定价模式：记录交易量并更新需求定价
-            if pricing_mode == 'official':
-                trade_amount = base_price  # base_price已经是总价（单价×数量后的总价含税前）
-                self.price_manager.record_trade_volume(item_type, shop_type, quantity, self.db_manager, trade_amount)
-                self.price_manager.update_demand_pricing(item_type, self.db_manager)
             
             if shop_type == "sell":
                 return self._execute_sell_shop_purchase(player, current_shop, quantity, base_price, tax_amount, total_price, unit_price)
@@ -2496,6 +2547,7 @@ class ARCSignShopPlugin(Plugin):
 
             updated = self._get_shop_by_id(shop_data['id'])
             self._refresh_shop_sign_by_data(updated or shop_data)
+            self._notify_market_trade(shop_data, int(given_qty), actual_base_price)
 
             # 若实际发放少于输入数量，给出明确提示
             if int(given_qty) < int(quantity):
@@ -2575,6 +2627,7 @@ class ARCSignShopPlugin(Plugin):
 
             updated = self._get_shop_by_id(shop_data['id'])
             self._refresh_shop_sign_by_data(updated or shop_data)
+            self._notify_market_trade(shop_data, quantity, base_price)
             
             return True, self._get_sell_success_message(quantity, item_data['name'], player_income, tax_amount)
                 
@@ -2751,7 +2804,7 @@ class ARCSignShopPlugin(Plugin):
             line4 = self.language_manager.GetText("SIGN_LINE_STOCK").format(stock_text)
             return [title, line2, line3, line4]
 
-        if pricing_mode == 'official':
+        if pricing_mode == 'official' or is_infinite:
             title = self.language_manager.GetText(
                 "SIGN_TITLE_OFFICIAL_SELL" if shop_type == 'sell' else "SIGN_TITLE_OFFICIAL_BUY"
             )
@@ -2964,13 +3017,14 @@ class ARCSignShopPlugin(Plugin):
             
         elif command == "pricereload":
             # 重新加载官方定价配置
-            self.price_manager.reload_config()
-            self.price_manager.load_price_adjustments_from_db(self.db_manager)
+            mkt = self._require_market(sender if hasattr(sender, 'send_message') else None)
+            if mkt: mkt.api_reload_prices()
             sender.send_message(self.language_manager.GetText("SHOP_MANAGE_PRICERELOAD_SUCCESS"))
             
         elif command == "pricereset":
             # 重置所有动态价格调整
-            self.price_manager.reset_all_adjustments(self.db_manager)
+            mkt = self._get_market()
+            if mkt: mkt.api_reset_adjustments()
             sender.send_message(self.language_manager.GetText("SHOP_MANAGE_PRICERESET_SUCCESS"))
 
         elif command == "delns":
@@ -2993,31 +3047,26 @@ class ARCSignShopPlugin(Plugin):
         return True
 
     def _handle_prices_command(self, sender: CommandSender):
-        """处理 /ssmanage prices 命令"""
-        priced_items = self.price_manager.get_all_priced_items()
-        if not priced_items:
-            sender.send_message(self.language_manager.GetText("SHOP_MANAGE_PRICES_NO_ITEMS"))
+        """处理 /ssmanage prices：转发市场经济状态。"""
+        mkt = self._require_market(sender if hasattr(sender, 'send_message') else None)
+        if not mkt:
             return
-        
-        dynamic_enabled = self.setting_manager.GetSettingBool("dynamic_pricing_enabled")
-        daily_enabled = self.setting_manager.GetSettingBool("daily_fluctuation_enabled")
-        
+        status = mkt.api_get_market_status()
+        dyn = "§a启用" if status.get("dynamic_pricing_enabled") else "§c禁用"
+        daily = "§a启用" if status.get("daily_fluctuation_enabled") else "§c禁用"
         content = self.language_manager.GetText("SHOP_MANAGE_PRICES_CONTENT").format(
-            len(priced_items),
-            "§a启用" if dynamic_enabled else "§c禁用",
-            "§a启用" if daily_enabled else "§c禁用"
+            status.get("item_count", 0), dyn, daily
         )
-        sender.send_message(content)
-        
-        # 显示每个物品的定价信息
-        for item_type, prices in priced_items.items():
-            display_name = self.price_manager.get_item_display_name(item_type)
+        sender.send_message(content.replace("\\n", "\n"))
+        sender.send_message(self.language_manager.GetText("SHOP_MANAGE_PRICES_MARKET_HINT"))
+        priced_items = mkt.api_list_priced_items()
+        for item_type, prices in list(priced_items.items())[:40]:
+            display_name = mkt.api_get_display_name(item_type)
             sell_price = prices.get('sell', 'N/A')
             buy_price = prices.get('buy', 'N/A')
-            adj = self.price_manager.get_price_adjustment(item_type)
-            
+            adj = mkt.api_get_adjustment(item_type)
             line = f"§f{display_name}: §a出售{sell_price} §b收购{buy_price}"
-            if adj['daily_adjust_percent'] != 0:
+            if adj.get('daily_adjust_percent', 0) != 0:
                 sign = "+" if adj['daily_adjust_percent'] > 0 else ""
                 line += f" §7(波动{sign}{adj['daily_adjust_percent']:.1f}%)"
             sender.send_message(line)

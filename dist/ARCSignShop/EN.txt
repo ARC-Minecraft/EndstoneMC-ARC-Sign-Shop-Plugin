@@ -1,4 +1,4 @@
-# Sign Shop Plugin
+﻿# Sign Shop Plugin
 SHOP_MAIN_PANEL_TITLE=§6Sign Shop System
 SHOP_MAIN_PANEL_CONTENT=§fWelcome to the Sign Shop System! You can create shops to sell items or browse other players' shops.
 SHOP_CREATE_BUTTON=§aCreate Shop
@@ -158,7 +158,7 @@ QS_START_SUCCESS=§aEntered {0} quick setup.\n§fHold an item and right-click a 
 QS_STOP_SUCCESS=§aExited auto-pricing shop quick setup
 QS_NO_HELD_ITEM=§cHold the item you want to list before interacting with a sign
 QS_NO_OFFICIAL_PRICE=§cItem §e{0} §chas no official price and cannot be used for quick setup
-QS_PLACEHOLDER_PRICE=§eItem §f{0} §ehas no official price yet; temporary sell price is §c99999§e. Recycle opens after you add a buy price in official_prices.yml and run /ssmanage pricereload
+QS_PLACEHOLDER_PRICE=§eItem §f{0} §ehas no official price yet; temporary sell price is §c99999§e. Recycle opens after you add a buy price in official_prices.yml and run /market reload
 QS_CONTINUE_HINT=§7Still in quick setup: hold an item and click another sign, or /ss qs stop
 
 # Sign text
@@ -172,3 +172,12 @@ SIGN_LINE_PRICE=Price:{0}
 SIGN_LINE_RATIO=Rate:{0}:{1}
 SIGN_LINE_STOCK=Stock:{0}
 SHOP_NOT_SIGN=§cThat is §e{0}§c. Use a sign to create a shop!
+
+# Official pricing mode
+SHOP_OFFICIAL_PRICING_MODE_TITLE=§6Official Shop — Pricing Mode
+SHOP_OFFICIAL_PRICING_MODE_CONTENT=§fAuto pricing uses ARC Market Economy dynamic prices; manual pricing lets you set a fixed unit price (still a system infinite shop).
+SHOP_OFFICIAL_PRICING_AUTO_BUTTON=§aAuto pricing§r (market economy)
+SHOP_OFFICIAL_PRICING_MANUAL_BUTTON=§eManual pricing§r (fixed unit price)
+SHOP_OFFICIAL_PRICING_AUTO_DISABLED=§cAuto pricing unavailable§r (arc_market_economy not installed)
+SHOP_MARKET_REQUIRED=§cInstall and enable ARC Market Economy (arc_market_economy) for auto pricing
+SHOP_MANAGE_PRICES_MARKET_HINT=§7Use /market prices|reload|reset for market admin

@@ -1,4 +1,4 @@
-# 木牌商店插件
+﻿# 木牌商店插件
 SHOP_MAIN_PANEL_TITLE=§6木牌商店系统
 SHOP_MAIN_PANEL_CONTENT=§f欢迎使用木牌商店系统！你可以创建商店出售物品，或浏览其他玩家的商店。
 SHOP_CREATE_BUTTON=§a创建商店
@@ -337,7 +337,7 @@ SHOP_MANAGE_TITLE_BUY_OFFICIAL=（官方·收购）
 SHOP_MANAGE_TITLE_BOTH_OFFICIAL=（官方·买卖）
 # 官方定价 — 管理命令
 SHOP_MANAGE_PRICES_TITLE=§6官方定价管理
-SHOP_MANAGE_PRICES_CONTENT=§f当前有 {0} 个物品配置了官方定价。\n动态定价: {1}\n每日波动: {2}\n\n§e子命令:\n§f/ssmanage pricereload §7— 重新加载定价配置\n§f/ssmanage pricereset §7— 重置所有动态调整
+SHOP_MANAGE_PRICES_CONTENT=§f当前有 {0} 个物品配置了官方定价。\n动态定价: {1}\n每日波动: {2}\n\n§e子命令:\n§f/market reload §7— 重新加载定价配置\n§f/ssmanage pricereset §7— 重置所有动态调整
 SHOP_MANAGE_PRICERELOAD_SUCCESS=§a官方定价配置已重新加载
 SHOP_MANAGE_PRICERESET_SUCCESS=§a所有动态价格调整已重置
 SHOP_MANAGE_PRICES_NO_ITEMS=§c暂无官方定价物品
@@ -355,7 +355,7 @@ QS_START_SUCCESS=§a已进入{0}快速设置模式。\n§f手持物品右键木�
 QS_STOP_SUCCESS=§a已退出自动定价商店快速设置模式
 QS_NO_HELD_ITEM=§c请手持要上架的物品后再交互木牌
 QS_NO_OFFICIAL_PRICE=§c物品 §e{0} §c没有官方定价，无法快速设置为自动定价商店
-QS_PLACEHOLDER_PRICE=§e物品 §f{0} §e尚未配置官方定价，暂以 §c99999 §e作为出售价；回收需配置 buy 价后开放。请在 official_prices.yml 补充后执行 /ssmanage pricereload
+QS_PLACEHOLDER_PRICE=§e物品 §f{0} §e尚未配置官方定价，暂以 §c99999 §e作为出售价；回收需配置 buy 价后开放。请在 official_prices.yml 补充后执行 /market reload
 QS_CONTINUE_HINT=§7仍在快速设置中：可继续手持物品点木牌，或输入 /ss qs stop 结束
 
 # 木牌文案
@@ -368,3 +368,12 @@ SIGN_LINE_ITEM=物品：{0}
 SIGN_LINE_PRICE=价格：{0}
 SIGN_LINE_RATIO=比例：{0}:{1}
 SIGN_LINE_STOCK=库存：{0}
+
+# 官方定价方式
+SHOP_OFFICIAL_PRICING_MODE_TITLE=§6官方商店 — 选择定价方式
+SHOP_OFFICIAL_PRICING_MODE_CONTENT=§f自动定价由弧光市场经济插件提供动态价；手动定价由你自行填写固定单价（仍为系统无限商店）。
+SHOP_OFFICIAL_PRICING_AUTO_BUTTON=§a自动定价§r（市场经济动态价）
+SHOP_OFFICIAL_PRICING_MANUAL_BUTTON=§e手动定价§r（自填固定单价）
+SHOP_OFFICIAL_PRICING_AUTO_DISABLED=§c自动定价不可用§r（未安装 arc_market_economy）
+SHOP_MARKET_REQUIRED=§c需要安装并启用弧光市场经济插件 (arc_market_economy) 才能使用自动定价
+SHOP_MANAGE_PRICES_MARKET_HINT=§7详细管理请使用 /market prices|reload|reset

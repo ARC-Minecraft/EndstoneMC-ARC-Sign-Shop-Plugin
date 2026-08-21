@@ -1,10 +1,10 @@
-[build-system]
+﻿[build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
 name = "endstone_arc_sign_shop"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = []
 authors = [
     { name = "DEVILENMO", email = "DEVILENMO@gmail.com" },

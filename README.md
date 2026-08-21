@@ -1,6 +1,6 @@
 # 弧光木牌商店插件 (ARC Sign Shop Plugin)
 
-[![版本](https://img.shields.io/badge/版本-0.2.0-blue.svg)](https://github.com/DEVILENMO/EndstoneMC-ARC-Sign-Shop-Plugin)
+[![版本](https://img.shields.io/badge/版本-1.0.0-blue.svg)](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Sign-Shop-Plugin)
 [![EndStone](https://img.shields.io/badge/EndStone-0.10+-green.svg)](https://github.com/EndstoneMC/endstone)
 
 用木牌创建商店：右键开店/交易，牌面自动显示商店信息。
@@ -19,7 +19,7 @@
 
 建官方出售/收购时先选：
 
-- **自动定价**：依赖 [弧光市场经济](https://github.com/DEVILENMO/EndstoneMC-ARC-Market-Economy-Plugin)（`arc_market_economy`），动态价 + 日波动 + 成交调价
+- **自动定价**：依赖 [弧光市场经济](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Market-Economy-Plugin)（`arc_market_economy`），动态价 + 日波动 + 成交调价
 - **手动定价**：OP 自填固定单价，仍为系统无限店，不回调市场
 
 ## 木牌文案示例

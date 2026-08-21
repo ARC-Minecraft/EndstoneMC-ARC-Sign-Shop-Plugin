@@ -1,0 +1,182 @@
+# Sign Shop Plugin
+SHOP_MAIN_PANEL_TITLE=§6Sign Shop System
+SHOP_MAIN_PANEL_CONTENT=§fWelcome to the Sign Shop System! You can create shops to sell items or browse other players' shops.
+SHOP_CREATE_BUTTON=§aCreate Shop
+SHOP_MY_SHOPS_BUTTON=§eMy Shops
+SHOP_NEARBY_BUTTON=§bNearby Shops
+SHOP_CLOSE_BUTTON=§cClose
+SHOP_PANEL_ERROR=§cShop panel operation error!
+
+# Shop Type Selection
+SHOP_TYPE_SELECT_TITLE=§6Select Shop Type
+SHOP_TYPE_SELECT_CONTENT=§fPlease select the type of shop you want to create:
+SHOP_TYPE_SELL_BUTTON=§aSell Shop(Sell items to other players)
+SHOP_TYPE_BUY_BUTTON=§bBuy Shop(Buy items from other players)
+SHOP_TYPE_BARTER_BUTTON=§dBarter Shop(Trade item B for item A)
+SHOP_BARTER_GIVE_SELECT_TITLE=§dSelect Item to Give
+SHOP_BARTER_GIVE_SELECT_CONTENT=§fSelect item A that the shop will give (removed from your inventory on create):
+SHOP_BARTER_COST_SELECT_TITLE=§dSelect Item to Request
+SHOP_BARTER_COST_SELECT_CONTENT=§fGive item: §a{0} x{1}\n§fNow select item B that buyers must pay (template only, not removed):
+SHOP_BARTER_NO_GIVE_ITEMS=§cNo items available to give!
+SHOP_BARTER_NO_COST_ITEMS=§cNo items available to request!
+SHOP_BARTER_RATIO_TITLE=§dSet Trade Ratio
+SHOP_BARTER_RATIO_INFO=§fGive item A: §a{0} §7(inv x{1})\n§fCost item B: §b{2} §7(inv x{3})\n§eSet: give x of A for y of B
+SHOP_BARTER_GIVE_AMOUNT_LABEL=§aGive amount x (A per trade)
+SHOP_BARTER_GIVE_AMOUNT_PLACEHOLDER=e.g. 1
+SHOP_BARTER_COST_AMOUNT_LABEL=§bCost amount y (B per trade)
+SHOP_BARTER_COST_AMOUNT_PLACEHOLDER=e.g. 2
+SHOP_BARTER_INVALID_RATIO=§cInvalid ratio! Both x and y must be integers greater than 0
+SHOP_BARTER_SETUP_INSTRUCTION=§fBarter shop ready!\n§aGive: §f{1} x {0}\n§bCost: §f{3} x {2}\n§eStock(A): §f{4}\n\n§eRight-click a sign to create the shop!
+SHOP_BARTER_CREATED_SUCCESS=§dBarter shop created! §fStocked {0} x{1}, ratio {2} {3} ↔ {4} {5}
+SHOP_BARTER_RATIO_DISPLAY={0} {1} ↔ {2} {3}
+SHOP_BARTER_RATIO_LABEL=Trade Ratio
+SHOP_DETAIL_BARTER_COST_ITEM=§fCost item: {0}
+SHOP_DETAIL_BARTER_RATIO=§fRatio: {0} {1} ↔ {2} {3}
+SHOP_BARTER_TRADE_BUTTON=§dTrade
+SHOP_BARTER_TRADE_TITLE=§dBarter Trade
+SHOP_PURCHASE_BARTER_INFO=§fReceive: {0}\n§fStock: {1}\n§fRatio: {2} {3} ↔ {4} {5}\n§fMax trades: {6}
+SHOP_BARTER_LOTS_LABEL=§eTrade count
+SHOP_BARTER_CONFIG_ERROR=§cBarter shop config is invalid!
+SHOP_BARTER_NOT_ENOUGH_COST=§cNot enough items! Need {0} x {1}
+SHOP_BARTER_SUCCESS=§aTrade success! Paid {0} {1}, received {2} {3}
+SHOP_BARTER_NOTIFICATION=§dBarter shop trade! §f{0} paid {1} {2} for {3} {4}
+SHOP_TYPE_MANAGE_BARTER=§dBarter shop§r: players pay item B to receive item A
+SHOP_TYPE_MANAGE_BARTER_INFINITE=§eSystem infinite barter§r: players pay item B, system gives unlimited item A
+SHOP_TYPE_TAG_BARTER=§d[Barter]§r
+SHOP_TYPE_TAG_BARTER_INFINITE=§e[System·Barter]§r
+SHOP_TYPE_PLAIN_BARTER={0}Barter shop — players trade item B for item A
+SHOP_MANAGE_TITLE_BARTER=(Barter)
+SHOP_MANAGE_TITLE_BARTER_INFINITE=(System·Barter)
+SHOP_DELETE_BARTER_NOTICE=Remaining give-stock and collected cost items will be returned to the owner (if online).
+
+SHOP_ITEM_SELECT_TITLE=§eSelect Item to Sell
+SHOP_ITEM_SELECT_CONTENT=§fPlease select an item from your inventory to create a shop:
+SHOP_NO_ITEMS=§cNo sellable items in inventory!
+SHOP_BACK_BUTTON=§eBack
+
+SHOP_PRICE_PANEL_TITLE=§eSet Item Price
+SHOP_PRICE_ITEM_INFO=§fItem to sell: §a{0} §fx§a{1}
+SHOP_PRICE_INPUT_LABEL=§eUnit Price Setting
+SHOP_PRICE_INPUT_PLACEHOLDER=Enter price per item, e.g.: 10
+SHOP_DISPLAY_NAME_LABEL=§eItem Display Name
+SHOP_DISPLAY_NAME_PLACEHOLDER=Custom name shown in shops; leave empty for default
+
+# Buy Shop Related
+SHOP_BUY_PRICE_PANEL_TITLE=§bSet Buy Price
+SHOP_BUY_ITEM_INFO=§fItem to buy: §a{0}
+SHOP_BUY_PRICE_INPUT_LABEL=§bBuy Price
+SHOP_BUY_PRICE_INPUT_PLACEHOLDER=Enter buy price per item, e.g.: 8
+SHOP_BUY_BUDGET_LABEL=§6Budget Setting
+SHOP_BUY_BUDGET_PLACEHOLDER=Enter total budget, e.g.: 1000
+
+SHOP_SETUP_TITLE=§aPrepare to Create Shop
+SHOP_SETUP_INSTRUCTION=§fShop setup complete!\n§aItem: §f{0} x{1}\n§aUnit Price: §f{2}\n\n§eNow right-click on a sign to create the shop!
+SHOP_BUY_SETUP_INSTRUCTION=§fBuy shop setup complete!\n§bItem: §f{0}\n§bBuy Price: §f{1}\n§6Budget: §f{2} §7(can buy {3} items)\n\n§eNow right-click on a sign to create the buy shop!
+
+SHOP_INVALID_PRICE=§cInvalid price! Please enter a number greater than 0
+SHOP_INVALID_BUDGET=§cInvalid budget! Budget must be greater than 0 and at least equal to unit price
+SHOP_INSUFFICIENT_FUNDS_FOR_BUDGET=§cInsufficient funds! Need {0}, you have {1}
+SHOP_RESULT_TITLE=§6Operation Result
+
+SHOP_ALREADY_EXISTS=§cA shop already exists at this location!
+SHOP_ITEM_NOT_FOUND=§cItem not found in your inventory!
+SHOP_CREATED_SUCCESS=§aShop created successfully! §fSelling {0} x{1}, unit price {2}
+SHOP_BUY_CREATED_SUCCESS=§bBuy shop created successfully! §fBuying {0}, unit price {1}, budget {2}, can buy {3} items
+SHOP_CREATE_FAILED=§cShop creation failed!
+SHOP_ITEM_REMOVE_FAILED=§cFailed to remove item from inventory!
+SHOP_BUDGET_DEDUCT_FAILED=§cFailed to deduct budget!
+
+SHOP_DETAIL_TITLE=§6Shop Details
+SHOP_DETAIL_INFO=§fOwner: §a{0}\n§fItem: §e{1}\n§fStock: §c{2}\n§fUnit Price: §6{3}
+SHOP_BUY_BUTTON=§aBuy
+SHOP_MANAGE_BUTTON=§eManage Shop
+
+SHOP_PURCHASE_TITLE=§aBuy Items
+SHOP_PURCHASE_INFO=§fItem: §e{0}\n§fStock: §c{1}\n§fUnit Price: §6{2}
+SHOP_QUANTITY_LABEL=§ePurchase Quantity
+SHOP_QUANTITY_PLACEHOLDER=Enter quantity to buy (max {0})
+
+SHOP_INVALID_QUANTITY=§cInvalid quantity! Please check input and stock
+SHOP_CORE_PLUGIN_NOT_FOUND=§cEconomy core plugin not found!
+SHOP_INSUFFICIENT_FUNDS=§cInsufficient funds! Need {0}, you have {1}
+SHOP_INSUFFICIENT_STOCK=§cInsufficient stock!
+SHOP_PAYMENT_FAILED=§cPayment failed!
+SHOP_OWNER_PAYMENT_FAILED=§cFailed to pay shop owner!
+SHOP_PURCHASE_SUCCESS=§aPurchase successful! Got {0} {1}, spent {2}
+SHOP_PURCHASE_SUCCESS_WITH_TAX=§aPurchase successful! Got {0} {1}, spent {2} §7(including tax {3})
+SHOP_SELL_SUCCESS=§aSale successful! Earned {2} coins, sold {0} {1}
+SHOP_SELL_SUCCESS_WITH_TAX=§aSale successful! Earned {2} coins, sold {0} {1} §7(tax {3})
+SHOP_ITEM_GIVE_FAILED=§cFailed to give items!
+SHOP_PURCHASE_ERROR=§cError occurred during purchase!
+
+# New Error Messages
+SHOP_NOT_AVAILABLE=§cShop is temporarily unavailable!
+SHOP_INSUFFICIENT_BUDGET=§cShop budget insufficient!
+SHOP_PLAYER_NO_ITEMS=§cYou don't have enough items!
+
+# Notification Messages
+SHOP_SALE_NOTIFICATION=§aNew transaction in your shop! §f{0} bought {1} {2}, income {3}
+SHOP_BUY_NOTIFICATION=§bYour buy shop received items! §f{0} sold {1} {2}, spent {3}
+
+# Inventory related error messages
+SHOP_INVENTORY_FULL=§cInventory is full, cannot complete transaction!
+SHOP_ITEM_STACK_ERROR=§cItem stack processing error!
+
+# Shop protection related messages
+SHOP_BREAK_PROTECTED=§cThis button is §a{0}§c's shop, you cannot break it!
+SHOP_REMOVED_BY_OWNER_SELL=§aShop removed! §fRemaining stock {0} {1} returned to inventory
+SHOP_REMOVED_BY_OWNER_BUY=§aBuy shop removed! §fRemaining budget {0} coins returned to account
+SHOP_REMOVAL_ERROR=§cError occurred while removing shop!
+
+# Interaction hint messages
+SHOP_NOT_SIGN=§cYou are interacting with §e{0}§c, please use a sign to create a shop!
+SHOP_BUY_SUSPENDED=§c§l[Buy Suspended]§r
+SHOP_BUY_SUSPENDED_DETAIL=§cBuy price has exceeded sell price, buyback is temporarily suspended. §7It will resume automatically after price recovery.
+SHOP_BUY_SUSPENDED_MSG=§cThis item's buy price has exceeded sell price, buyback is temporarily suspended! §7Please wait for price recovery.
+
+# Namespace bulk delete
+SHOP_MANAGE_DELNS_BUTTON=§cBulk Delete by Namespace
+SHOP_MANAGE_DELNS_TITLE=§6Delete Shops by Namespace
+SHOP_MANAGE_DELNS_CONTENT=§f{0} mod namespace(s).\n§7minecraft and items without namespace are excluded.\n§eClick a namespace to confirm deletion.
+SHOP_MANAGE_DELNS_EMPTY=§cNo mod-namespace shops available for bulk delete
+SHOP_MANAGE_DELNS_BUTTON_LINE=§e{0} §7— §f{1} shop(s)
+SHOP_MANAGE_DELNS_CONFIRM_TITLE=§cConfirm Namespace Delete
+SHOP_MANAGE_DELNS_CONFIRM_CONTENT=§fAbout to delete all shops under namespace §e{0}§f: §c{1} §fshop(s).\n§7Player shops will try to refund stock/budget to owners (owners must be online for items).\n§cThis cannot be undone!
+SHOP_MANAGE_DELNS_CONFIRM_BUTTON=§cConfirm Delete
+SHOP_MANAGE_DELNS_SUCCESS=§aDeleted §f{1} §ashop(s) under namespace §e{0}
+SHOP_MANAGE_DELNS_NOT_FOUND=§cNo shops found for namespace §e{0}
+SHOP_MANAGE_DELNS_PANEL_ERROR=§cFailed to show namespace delete panel
+SHOP_MANAGE_DELNS_USAGE=§cUsage: /ssmanage delns [namespace]
+# Quick setup official auto-pricing shops
+QS_OP_ONLY=§cOnly OP can use quick setup
+QS_USAGE=§cUsage: /ss qs start [sell|buy] or /ss qs stop
+QS_ALREADY_ACTIVE=§eYou are already in auto-pricing shop quick setup. Hold an item and right-click a sign, or /ss qs stop to exit
+QS_NOT_ACTIVE=§cYou are not in quick setup mode
+QS_START_SUCCESS=§aEntered {0} quick setup.
+§fHold an item and right-click a sign.
+§eType /ss qs stop to exit
+QS_STOP_SUCCESS=§aExited auto-pricing shop quick setup
+QS_NO_HELD_ITEM=§cHold the item you want to list before interacting with a button
+QS_NO_OFFICIAL_PRICE=§cItem §e{0} §chas no official price and cannot be used for quick setup
+QS_PLACEHOLDER_PRICE=§eItem §f{0} §ehas no official price yet; temporary sell price is §c99999§e. Recycle opens after you add a buy price in official_prices.yml and run /ssmanage pricereload
+QS_CONTINUE_HINT=§7Still in quick setup: hold an item and click another button, or type /ss qs stop to exit
+
+# Sign text
+SIGN_TITLE_PLAYER_SELL=[Player-Sell]
+SIGN_TITLE_PLAYER_BUY=[Player-Buy]
+SIGN_TITLE_OFFICIAL_SELL=[Official-Sell]
+SIGN_TITLE_OFFICIAL_BUY=[Official-Buy]
+SIGN_TITLE_BARTER=[Player-Trade]
+SIGN_LINE_ITEM=Item:{0}
+SIGN_LINE_PRICE=Price:{0}
+SIGN_LINE_RATIO=Rate:{0}:{1}
+SIGN_LINE_STOCK=Stock:{0}
+SHOP_NOT_SIGN=§cThat is §e{0}§c. Use a sign to create a shop!
+QS_USAGE=§cUsage: /ss qs start [sell|buy] or /ss qs stop
+QS_MODE_SELL=official sell
+QS_MODE_BUY=official buy
+QS_START_SUCCESS=§aEntered {0} quick setup.
+§fHold an item and right-click a sign.
+§eType /ss qs stop to exit
+QS_ALREADY_ACTIVE=§eAlready in quick setup. Hold an item and right-click a sign, or /ss qs stop
+QS_CONTINUE_HINT=§7Still in quick setup: hold an item and click another sign, or /ss qs stop

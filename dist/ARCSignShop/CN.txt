@@ -1,0 +1,379 @@
+# 木牌商店插件
+SHOP_MAIN_PANEL_TITLE=§6木牌商店系统
+SHOP_MAIN_PANEL_CONTENT=§f欢迎使用木牌商店系统！你可以创建商店出售物品，或浏览其他玩家的商店。
+SHOP_CREATE_BUTTON=§a创建商店
+SHOP_MY_SHOPS_BUTTON=§e我的商店  
+SHOP_NEARBY_BUTTON=§b附近商店
+SHOP_CLOSE_BUTTON=§c关闭
+SHOP_PANEL_ERROR=§c商店面板操作出现错误！
+SHOP_MANAGE_ALL_SHOPS_BUTTON=§d管理全部商店（OP）
+# 商店类型选择
+SHOP_TYPE_SELECT_TITLE=§6选择商店类型
+SHOP_TYPE_SELECT_CONTENT=§f请选择你要创建的商店类型：
+SHOP_TYPE_SELL_BUTTON=§a出售商店(出售物品给其他玩家)
+SHOP_TYPE_BUY_BUTTON=§b收购商店(收购其他玩家的物品)
+SHOP_TYPE_BARTER_BUTTON=§d以物易物商店(用物品B换物品A)
+SHOP_TYPE_SELL_INFINITE_BUTTON=§e无限出售（系统商店）
+SHOP_TYPE_BUY_INFINITE_BUTTON=§e无限收购（系统商店）
+# 以物易物
+SHOP_BARTER_GIVE_SELECT_TITLE=§d选择给出的物品
+SHOP_BARTER_GIVE_SELECT_CONTENT=§f请选择商店给出的物品 A（创建时会从背包扣除）：
+SHOP_BARTER_COST_SELECT_TITLE=§d选择收取的物品
+SHOP_BARTER_COST_SELECT_CONTENT=§f给出物: §a{0} x{1}\n§f请再选择玩家兑换时需要交出的物品 B（仅作模板，不会扣除）：
+SHOP_BARTER_NO_GIVE_ITEMS=§c背包中没有可作为给出物的物品！
+SHOP_BARTER_NO_COST_ITEMS=§c背包中没有可作为收取物的物品！
+SHOP_BARTER_RATIO_TITLE=§d设置兑换比例
+SHOP_BARTER_RATIO_INFO=§f给出物 A: §a{0} §7(背包 x{1})\n§f收取物 B: §b{2} §7(背包 x{3})\n§e设置：交出 x 个 A，收取 y 个 B
+SHOP_BARTER_GIVE_AMOUNT_LABEL=§a给出数量 x（每份交易给出的 A）
+SHOP_BARTER_GIVE_AMOUNT_PLACEHOLDER=例如：1
+SHOP_BARTER_COST_AMOUNT_LABEL=§b收取数量 y（每份交易收取的 B）
+SHOP_BARTER_COST_AMOUNT_PLACEHOLDER=例如：2
+SHOP_BARTER_INVALID_RATIO=§c无效的兑换比例！x 和 y 都必须是大于 0 的整数
+SHOP_BARTER_SETUP_INSTRUCTION=§f以物易物商店设置完成！\n§a给出: §f{1} 个 {0}\n§b收取: §f{3} 个 {2}\n§e库存(A): §f{4}\n\n§e现在请右键点击一个木牌来创建商店！
+SHOP_BARTER_CREATED_SUCCESS=§d以物易物商店创建成功！§f上架 {0} x{1}，比例 {2} 个 {3} ↔ {4} 个 {5}
+SHOP_BARTER_RATIO_DISPLAY={0}个{1} ↔ {2}个{3}
+SHOP_BARTER_RATIO_LABEL=兑换比例
+SHOP_DETAIL_BARTER_COST_ITEM=§f收取物: {0}
+SHOP_DETAIL_BARTER_RATIO=§f比例: {0} 个 {1} ↔ {2} 个 {3}
+SHOP_BARTER_TRADE_BUTTON=§d兑换
+SHOP_BARTER_TRADE_TITLE=§d物品兑换
+SHOP_PURCHASE_BARTER_INFO=§f获得物品: {0}\n§f库存: {1}\n§f比例: {2} 个 {3} ↔ {4} 个 {5}\n§f可兑换份数: {6}
+SHOP_BARTER_LOTS_LABEL=§e兑换份数
+SHOP_BARTER_CONFIG_ERROR=§c以物易物商店配置损坏！
+SHOP_BARTER_NOT_ENOUGH_COST=§c背包中没有足够的物品！需要 {0} 个 {1}
+SHOP_BARTER_SUCCESS=§a兑换成功！交出 {0} 个 {1}，获得 {2} 个 {3}
+SHOP_BARTER_NOTIFICATION=§d你的以物易物商店成交！§f{0} 用 {1} 个 {2} 换走了 {3} 个 {4}
+SHOP_TYPE_MANAGE_BARTER=§d以物易物商店§r：其他玩家交出物品 B，换取商店中的物品 A
+SHOP_TYPE_MANAGE_BARTER_INFINITE=§e系统·无限以物易物§r：其他玩家交出物品 B，系统无限发放物品 A
+SHOP_TYPE_TAG_BARTER=§d[易物]§r
+SHOP_TYPE_TAG_BARTER_INFINITE=§e[系统·易物]§r
+SHOP_TYPE_PLAIN_BARTER={0}以物易物商店 — 玩家用物品 B 兑换物品 A
+SHOP_MANAGE_TITLE_BARTER=（以物易物）
+SHOP_MANAGE_TITLE_BARTER_INFINITE=（系统·易物）
+SHOP_DELETE_BARTER_NOTICE=删除后剩余给出物库存与已收取的物品将返还给店主（在线时发到背包）。
+SHOP_ITEM_SELECT_TITLE=§e选择要出售的物品
+SHOP_ITEM_SELECT_CONTENT=§f请从背包中选择一个物品来创建商店：
+SHOP_NO_ITEMS=§c背包中没有可出售的物品！
+SHOP_BACK_BUTTON=§e返回
+SHOP_PRICE_PANEL_TITLE=§e设置商品价格
+SHOP_PRICE_SELL_ITEM_INFO=§f物品: {0}\n§f数量: {1}
+SHOP_PRICE_BUY_ITEM_INFO=§f收购物品: {0}
+SHOP_PRICE_INPUT_LABEL=§e单价设置
+SHOP_PRICE_INPUT_PLACEHOLDER=输入每个物品的价格，例如：10
+SHOP_DISPLAY_NAME_LABEL=§e商品显示名称
+SHOP_DISPLAY_NAME_PLACEHOLDER=可自定义商店里显示的名字，留空则用默认名
+SHOP_PRICE_SELL_LABEL=单价（玩家购买时每件）
+SHOP_PRICE_BUY_LABEL=单价（玩家出售时每件）
+SHOP_INFINITE_SELL_TAG=§e[系统商店·无限库存]
+SHOP_INFINITE_BUY_TAG=§e[系统商店·无限预算]
+SHOP_INFINITE_SETUP_HINT=§e此为系统商店（无限库存/预算）
+SHOP_INFINITE_TITLE_PREFIX=系统商店 - 
+# 收购商店相关
+SHOP_BUY_PRICE_PANEL_TITLE=§b设置收购价格
+SHOP_BUY_ITEM_INFO=§f要收购的物品: §a{0}
+SHOP_BUY_PRICE_INPUT_LABEL=§b收购单价
+SHOP_BUY_PRICE_INPUT_PLACEHOLDER=输入每个物品的收购价格，例如：8
+SHOP_BUY_BUDGET_LABEL=§6预算设置
+SHOP_BUY_BUDGET_PLACEHOLDER=输入总预算，例如：1000
+SHOP_SETUP_TITLE=§a准备创建商店
+SHOP_SETUP_INSTRUCTION=§f商店设置完成！\n§a物品: §f{0}\n§a单价: §f{2}\n\n§e现在请右键点击一个木牌来创建商店！
+SHOP_BUY_SETUP_INSTRUCTION=§f收购商店设置完成！\n§b物品: §f{0}\n§b收购价: §f{1}\n§6预算: §f{2} §7(可收购{3}个)\n\n§e现在请右键点击一个木牌来创建收购商店！
+SHOP_INVALID_PRICE=§c无效的价格！请输入大于0的数字
+SHOP_INVALID_BUDGET=§c无效的预算！预算必须大于0且不少于单价
+SHOP_INSUFFICIENT_FUNDS_FOR_BUDGET=§c资金不足！预算需要{0}，你只有{1}
+SHOP_RESULT_TITLE=§6操作结果
+SHOP_ALREADY_EXISTS=§c该位置已经有商店了！
+SHOP_ITEM_NOT_FOUND=§c在你的背包中找不到该物品！
+SHOP_CREATED_SUCCESS=§a商店创建成功！§f出售 {0} x{1}，单价 {2}
+SHOP_BUY_CREATED_SUCCESS=§b收购商店创建成功！§f收购 {0}，单价 {1}，预算 {2}，可收购 {3} 个
+SHOP_INFINITE_CREATED_SUCCESS=§a系统商店创建成功！{0} - 单价:{1}（无限库存/预算）
+SHOP_CREATE_FAILED=§c商店创建失败！
+SHOP_ITEM_REMOVE_FAILED=§c从背包移除物品失败！
+SHOP_BUDGET_DEDUCT_FAILED=§c预算资金扣除失败！
+# 商店详情面板
+SHOP_DETAIL_TITLE=§6商店详情
+SHOP_DETAIL_OWNER=§f店主: {0}
+SHOP_DETAIL_TYPE=§f类型: {0}
+SHOP_DETAIL_ITEM=§f物品: {0}
+SHOP_DETAIL_STOCK=§f库存: {0}
+SHOP_DETAIL_BUDGET=§f预算: {0}
+SHOP_DETAIL_PRICE=§f单价: {0}
+SHOP_DETAIL_INFINITE_STOCK=§e无限
+SHOP_DETAIL_INFINITE_BUDGET=§e无限
+SHOP_BUY_BUTTON=§a购买
+SHOP_MANAGE_BUTTON=§e管理商店
+SHOP_SELL_BUTTON=§a出售
+SHOP_SELL_TITLE=§a出售物品
+SHOP_SELL_QUANTITY_LABEL=§e出售数量
+SHOP_SELL_QUANTITY_PLACEHOLDER=输入出售数量（最大{0}）
+# 购买面板
+SHOP_PURCHASE_TITLE=§a购买商品
+SHOP_PURCHASE_SELL_INFO=§f物品: {0}\n§f库存: {1}\n§f单价: {2}
+SHOP_PURCHASE_BUY_INFO=§f收购物品: {0}\n§f预算: {1}\n§f收购价: {2}
+SHOP_QUANTITY_LABEL=§e购买数量
+SHOP_QUANTITY_PLACEHOLDER=输入购买数量（最大{0}）
+SHOP_INVALID_QUANTITY=§c无效的数量！请检查输入和库存
+SHOP_NOT_ENOUGH_ITEMS=§c背包中没有足够的物品
+SHOP_CORE_PLUGIN_NOT_FOUND=§c未找到经济核心插件！
+SHOP_INSUFFICIENT_FUNDS=§c资金不足！需要 {0}，你只有 {1}
+SHOP_INSUFFICIENT_STOCK=§c库存不足！
+SHOP_INSUFFICIENT_BUDGET=§c商店预算不足！
+SHOP_PAYMENT_FAILED=§c支付失败！
+SHOP_OWNER_PAYMENT_FAILED=§c给店主付款失败！
+SHOP_PURCHASE_SUCCESS=§a购买成功！获得 {0} 个 {1}，花费 {2}
+SHOP_PURCHASE_SUCCESS_WITH_TAX=§a购买成功！获得 {0} 个 {1}，花费 {2} §7(含税 {3})
+SHOP_SELL_SUCCESS=§a出售成功！获得 {2} 金币，出售了 {0} 个 {1}
+SHOP_SELL_SUCCESS_WITH_TAX=§a出售成功！获得 {2} 金币，出售了 {0} 个 {1} §7(税费 {3})
+SHOP_TAX_INFO=§7交易税: {0}% (税费: {1})
+SHOP_TAX_RATE_DISPLAY=§7交易税: {0}%
+SHOP_PARTIAL_PURCHASE_NOTICE=§e注意：背包空间不足，本次仅成功购买 {0}/{1} 个，其余未购买。
+SHOP_ITEM_GIVE_FAILED=§c给予物品失败！
+SHOP_PURCHASE_ERROR=§c购买时出现错误！
+SHOP_NOT_AVAILABLE=§c商店暂时不可用！
+SHOP_PLAYER_NO_ITEMS=§c你没有足够的物品！
+SHOP_INVENTORY_FULL=§c背包已满，无法完成交易！
+SHOP_ITEM_STACK_ERROR=§c物品堆栈处理出现错误！
+# 通知消息
+SHOP_SALE_NOTIFICATION=§a你的商店有新交易！§f{0} 购买了 {1} 个 {2}，收入 {3}
+SHOP_BUY_NOTIFICATION=§b你的收购商店收到物品！§f{0} 出售了 {1} 个 {2}，支出 {3}
+# 商店保护
+SHOP_BREAK_PROTECTED=§c这个按钮是 §a{0} §c的商店，你不能破坏它！
+SHOP_REMOVED_BY_OWNER_SELL=§a商店已删除！§f剩余库存 {0} 个 {1} 已返还到背包
+SHOP_REMOVED_BY_OWNER_BUY=§a收购商店已删除！§f剩余预算 {0} 金币已返还到账户
+SHOP_REMOVAL_ERROR=§c删除商店时出现错误！
+# 交互提示
+SHOP_NOT_SIGN=§c你正在交互的是 §e{0} §c，请使用木牌来创建商店！
+# 权限
+PLAYER_ONLY_COMMAND=§c该命令只能由玩家执行！
+NO_PERMISSION=§c你没有权限执行此操作！
+# 辅助方法 - 店主显示
+SHOP_OWNER_SYSTEM=系统（官方商店）
+# 辅助方法 - 商店类型管理行
+SHOP_TYPE_MANAGE_SELL=§a出售商店§r：其他玩家在此「购买」物品（扣买家钱，货款给店主）
+SHOP_TYPE_MANAGE_SELL_INFINITE=§e系统·无限出售§r：其他玩家在此「购买」物品（扣买家钱，由系统发货，与个人资金无关）
+SHOP_TYPE_MANAGE_BUY=§b收购/回收商店§r：其他玩家在此「出售」物品换钱（收走物品，从商店预算中支付）
+SHOP_TYPE_MANAGE_BUY_INFINITE=§e系统·无限收购/回收§r：其他玩家在此「出售」物品换钱（收走物品，系统付钱，与个人资金无关）
+# 辅助方法 - 短标签
+SHOP_TYPE_TAG_SELL=§a[出售]§r
+SHOP_TYPE_TAG_SELL_INFINITE=§e[系统·出售]§r
+SHOP_TYPE_TAG_BUY=§b[收购]§r
+SHOP_TYPE_TAG_BUY_INFINITE=§e[系统·收购]§r
+# 辅助方法 - 纯文本标题
+SHOP_TYPE_PLAIN_SELL={0}出售商店 — 其他玩家在此「购买」物品（向商店付钱）
+SHOP_TYPE_PLAIN_BUY={0}收购/回收商店 — 其他玩家在此「出售」物品换钱（把物品卖给商店）
+SHOP_TYPE_PLAIN_SYSTEM_TAG=【系统·无限】
+# 辅助方法 - 管理标题后缀
+SHOP_MANAGE_TITLE_SELL=（出售）
+SHOP_MANAGE_TITLE_SELL_INFINITE=（系统·出售）
+SHOP_MANAGE_TITLE_BUY=（收购/回收）
+SHOP_MANAGE_TITLE_BUY_INFINITE=（系统·收购）
+# 管理命令
+SHOP_MANAGE_USAGE=§c用法: /ssmanage <list|clear|reload|prices|pricereload|pricereset|delns>
+SHOP_MANAGE_ACTIVE_COUNT=§f当前活跃商店数量: {0}
+SHOP_MANAGE_CLEAR_SUCCESS=§a所有商店数据已清除
+SHOP_MANAGE_RELOAD_SUCCESS=§a商店系统已重新加载
+SHOP_MANAGE_DELNS_BUTTON=§c按命名空间批量删除
+SHOP_MANAGE_DELNS_TITLE=§6按命名空间删除商店
+SHOP_MANAGE_DELNS_CONTENT=§f共 {0} 个模组命名空间。\n§7列表不含 minecraft，也不含无命名空间物品。\n§e点击命名空间进入删除确认。
+SHOP_MANAGE_DELNS_EMPTY=§c当前没有可批量删除的模组命名空间商店
+SHOP_MANAGE_DELNS_BUTTON_LINE=§e{0} §7— §f{1} 个商店
+SHOP_MANAGE_DELNS_CONFIRM_TITLE=§c确认删除命名空间
+SHOP_MANAGE_DELNS_CONFIRM_CONTENT=§f即将删除命名空间 §e{0} §f下的全部商店：§c{1} §f个。\n§7玩家商店会尝试退还库存/预算给店主（店主需在线才能收到物品）。\n§c此操作不可撤销！
+SHOP_MANAGE_DELNS_CONFIRM_BUTTON=§c确认删除
+SHOP_MANAGE_DELNS_SUCCESS=§a已删除命名空间 §e{0} §a下的 §f{1} §a个商店
+SHOP_MANAGE_DELNS_NOT_FOUND=§c未找到命名空间 §e{0} §c的商店
+SHOP_MANAGE_DELNS_PANEL_ERROR=§c显示命名空间删除面板时出现错误
+SHOP_MANAGE_DELNS_USAGE=§c用法: /ssmanage delns [命名空间]
+# 全部商店面板（OP）
+SHOP_ALL_SHOPS_TITLE=管理全部商店（OP）
+SHOP_NO_ACTIVE_SHOPS=服务器内暂无活跃商店
+SHOP_ALL_SHOPS_CONTENT=共 {0} 个活跃商店。\n绿色[出售]=玩家在此买货；蓝色[收购]=玩家卖货换钱；黄色[系统]=官方无限商店。\n点击条目进入管理。
+SHOP_ALL_SHOPS_PANEL_ERROR=§c显示商店列表时出现错误
+# 我的商店面板
+SHOP_MY_SHOPS_TITLE=我的商店
+SHOP_NO_MY_SHOPS=你还没有创建任何商店
+SHOP_MY_SHOPS_CONTENT=你有 {0} 个商店。\n绿色[出售]=玩家来买货；蓝色[收购]=玩家卖货换钱；黄色[系统]=官方无限商店。
+# 附近商店面板
+SHOP_NEARBY_SHOPS_TITLE=附近商店
+SHOP_NO_NEARBY_SHOPS=附近没有商店
+SHOP_NEARBY_SHOPS_CONTENT=找到 {0} 个附近的商店（前缀：出售=买货，收购=卖货换钱）
+SHOP_NEARBY_SHOPS_PANEL_ERROR=§c显示附近商店时出现错误
+# 通用标签
+SHOP_STOCK_INFINITE=无限
+SHOP_STOCK_LABEL=库存
+SHOP_BUDGET_LABEL=预算
+SHOP_UNIT_PRICE_LABEL=单价
+SHOP_BLOCKS_UNIT=方块
+SHOP_ENCHANT_TAG=附魔
+SHOP_LORE_TAG=Lore
+# 商店管理面板
+SHOP_MANAGE_SHOP_TITLE=管理商店
+SHOP_MANAGE_INFO_LABEL=商店信息:
+SHOP_OP_MANAGE_HINT=§e【OP 管理】先看类型：出售=别人来买货；收购=别人来卖货换钱。\n\n
+SHOP_MANAGE_POSITION=位置
+SHOP_MANAGE_CREATE_TIME=创建时间
+SHOP_MANAGE_ENCHANTS=附魔
+SHOP_MANAGE_ENCHANT_LINE=§7  - {0} 等级{1}
+SHOP_MANAGE_LEVEL=等级
+SHOP_MANAGE_LORE=Lore
+SHOP_COLLECTED_ITEMS_TOTAL=收集的物品: {0} 个
+SHOP_BUDGET_BALANCE_LABEL=预算余额
+SHOP_RESTOCK_BUTTON=补充库存
+SHOP_COLLECT_ITEMS_BUTTON=收取物品
+SHOP_CONVERT_INFINITE_BUTTON=转换为无限商店（系统商店）
+SHOP_DELETE_SHOP_BUTTON=删除商店
+SHOP_MANAGE_PANEL_ERROR=§c显示商店管理面板时出现错误
+# 转换无限商店
+SHOP_CONVERT_INFINITE_TITLE=转换为无限商店
+SHOP_ALREADY_INFINITE=该商店已是无限商店
+SHOP_CONVERT_INFINITE_SUCCESS=已将该商店转换为系统无限商店（无限库存/预算）
+SHOP_CONVERT_INFINITE_ERROR=§c转换失败
+# 补充库存面板
+SHOP_RESTOCK_TITLE=补充库存
+SHOP_RESTOCK_FOR_ITEM=为 {0} 补充库存
+SHOP_CURRENT_STOCK=当前库存
+SHOP_RESTOCK_QUANTITY_LABEL=补充数量
+SHOP_RESTOCK_QUANTITY_PLACEHOLDER=输入要补充的数量
+SHOP_RESTOCK_SUCCESS=§a成功补充 {0} 个 {1}
+SHOP_RESTOCK_ERROR=§c补充库存时出现错误
+SHOP_RESTOCK_PANEL_ERROR=§c显示补充库存面板时出现错误
+# 删除商店面板
+SHOP_DELETE_SHOP_TITLE=删除商店
+SHOP_CONFIRM_DELETE=确定要删除这个商店吗？
+SHOP_REMAINING_STOCK=剩余库存
+SHOP_REMAINING_BUDGET=剩余预算
+SHOP_DELETE_INFINITE_NOTICE=系统商店：删除后无库存/预算返还；与个人资金无关。
+SHOP_DELETE_SELL_NOTICE=删除后剩余库存将返还给店主（在线时发到背包）。
+SHOP_DELETE_BUY_NOTICE=删除后剩余预算将返还给店主；未收取的收购品将返还给店主（在线时发到背包）。
+SHOP_CONFIRM_DELETE_BUTTON=确定删除
+SHOP_CANCEL_BUTTON=取消
+SHOP_DELETE_PANEL_ERROR=§c显示删除确认面板时出现错误
+# 执行删除商店
+SHOP_SYSTEM_DELETE_SUCCESS=系统商店已成功删除
+SHOP_SYSTEM_DELETED=系统商店已删除
+SHOP_DELETE_SELL_RETURN=商店已成功删除，{0} 个 {1} 已返还到背包
+SHOP_DELETE_BUY_RETURN=商店已成功删除，剩余预算 {0} 已返还，收集的物品已返还到背包
+SHOP_DELETE_ERROR=§c删除商店时出现错误
+# 破坏删除
+SHOP_BREAK_DELETE_SUCCESS=商店已删除，{0} 批收集的物品（共 {1} 个）已返还到背包
+# 收取物品面板
+SHOP_COLLECT_ITEMS_TITLE=收取物品
+SHOP_NO_COLLECTED_ITEMS=没有收集到任何物品
+SHOP_COLLECTED_ITEMS_COUNT=收集到 {0} 批物品
+SHOP_COLLECT_ALL_BUTTON=一键收取所有
+SHOP_COLLECT_SINGLE_SUCCESS=成功收取 {0} 个 {1}
+SHOP_INVENTORY_FULL_COLLECT=背包空间不足，无法收取物品
+SHOP_COLLECT_ALL_SUCCESS=成功收取所有 {0} 批物品
+SHOP_COLLECT_PARTIAL_SUCCESS=成功收取 {0} 批物品，{1} 批因背包空间不足而保留
+SHOP_INVENTORY_FULL_COLLECT_ALL=背包空间不足，无法收取任何物品
+SHOP_COLLECT_ITEM_ERROR=§c收取物品时出现错误
+SHOP_COLLECT_PANEL_ERROR=§c显示收取物品面板时出现错误
+# API 接口
+SHOP_API_NOT_FOUND=商店不存在
+SHOP_API_BUYER_OFFLINE=买家不在线
+SHOP_API_PURCHASE_ERROR=购买时出现系统错误
+# 官方定价模式
+SHOP_TYPE_OFFICIAL_BUTTON=§d官方自动定价商店§r：从官方定价列表选物品，系统自动定价（可出售/回收/二合一）
+SHOP_TYPE_OFFICIAL_SELL_BUTTON=§d官方定价·出售§r：从官方定价列表选择物品，系统自动定价（动态波动）
+SHOP_TYPE_OFFICIAL_BUY_BUTTON=§d官方定价·收购§r：从官方定价列表选择物品，系统自动定价（动态波动）
+SHOP_OFFICIAL_MODE_TITLE=§6官方自动定价 — 选择模式
+SHOP_OFFICIAL_MODE_CONTENT=§f请选择商店模式：\n§a出售回收二合一§f最常用，玩家交互时再选买卖
+SHOP_OFFICIAL_MODE_BOTH_BUTTON=§a出售回收二合一§r：一个商店同时支持购买与回收
+SHOP_OFFICIAL_MODE_SELL_BUTTON=§e仅出售§r：玩家只能从商店购买物品
+SHOP_OFFICIAL_MODE_BUY_BUTTON=§b仅回收§r：玩家只能把物品卖给商店
+SHOP_OFFICIAL_PRICE_TITLE=§6官方定价 — 选择物品
+SHOP_OFFICIAL_CATEGORY_TITLE=§6官方定价 — 选择分类
+SHOP_OFFICIAL_CATEGORY_CONTENT=§f请先选择分类：\n§a★ 背包内物品§f会单独列出（若有匹配）
+SHOP_OFFICIAL_CATEGORY_INVENTORY=§a★ 背包内物品 §7({0})
+SHOP_OFFICIAL_CATEGORY_ITEM=§f{0} §7({1})
+SHOP_OFFICIAL_CATEGORY_INVENTORY_TITLE=§6官方定价 — 背包内物品
+SHOP_OFFICIAL_CATEGORY_INVENTORY_CONTENT=§f以下是你背包中有、且已配置官方定价的物品：
+SHOP_OFFICIAL_CATEGORY_ITEMS_TITLE=§6官方定价 — {0}
+SHOP_OFFICIAL_CATEGORY_ITEMS_CONTENT=§f分类「{0}」中的物品：
+SHOP_OFFICIAL_CATEGORY_EMPTY=§c该分类暂无物品
+SHOP_OFFICIAL_NO_ITEMS=§c暂无官方定价物品！请联系管理员配置 official_prices.yml
+SHOP_OFFICIAL_SELECT_CONTENT_SELL=§f请选择要出售的物品（玩家购买价由系统定价）\n§a★ 背包中有的物品会排在上方
+SHOP_OFFICIAL_SELECT_CONTENT_BUY=§f请选择要收购的物品（玩家出售价由系统定价）\n§a★ 背包中有的物品会排在上方
+SHOP_OFFICIAL_SELECT_CONTENT_BOTH=§f请选择物品（出售与回收价均由系统定价）\n§a★ 背包中有的物品会排在上方
+SHOP_OFFICIAL_IN_INVENTORY=§a★[背包]
+SHOP_OFFICIAL_SELL_PRICE=§a出售价:§r
+SHOP_OFFICIAL_BUY_PRICE=§b收购价:§r
+SHOP_OFFICIAL_DISCOUNT_INFO_SELL=§f物品: §a{0}§r\n§f基准出售价: {1}\n§f当前出售价: {2}
+SHOP_OFFICIAL_DISCOUNT_INFO_BUY=§f物品: §a{0}§r\n§f基准收购价: {1}\n§f当前收购价: {2}
+SHOP_OFFICIAL_DISCOUNT_INFO_BOTH=§f物品: §a{0}§r\n§f基准出售价: {1} → 当前: {2}\n§f基准收购价: {3} → 当前: {4}
+SHOP_OFFICIAL_DEMAND_ADJUST=§7需求调整: {0}
+SHOP_OFFICIAL_DAILY_FLUCTUATION=§7每日波动: {0}
+SHOP_OFFICIAL_DISCOUNT_LABEL=§e商店折扣（%）
+SHOP_OFFICIAL_DISCOUNT_PLACEHOLDER=输入折扣百分比，如 -10 表示九折优惠，0 表示无折扣
+SHOP_OFFICIAL_INVALID_DISCOUNT=§c无效的折扣值！请输入 -90 到 100 之间的数字
+SHOP_OFFICIAL_PRICE_ERROR=§c无法计算官方定价！请检查配置文件
+SHOP_OFFICIAL_SETUP_SELL=§f官方定价商店设置完成！\n§a物品: §f{0}\n§a当前售价: §f{1} §7(基准价: {2}){3}\n\n§e现在请右键点击一个木牌来创建商店！
+SHOP_OFFICIAL_SETUP_BUY=§f官方定价收购商店设置完成！\n§b物品: §f{0}\n§b当前收购价: §f{1} §7(基准价: {2}){3}\n\n§e现在请右键点击一个木牌来创建收购商店！
+SHOP_OFFICIAL_SETUP_BOTH=§f官方二合一商店设置完成！\n§a物品: §f{0}\n§a当前售价: §f{1}\n§b当前回收价: §f{2}{3}\n\n§e现在请右键点击一个木牌来创建商店！\n§7玩家交互时可选择购买或回收
+SHOP_OFFICIAL_DISCOUNT_TITLE_SELL=§6官方定价 — 出售折扣设置
+SHOP_OFFICIAL_DISCOUNT_TITLE_BUY=§6官方定价 — 收购折扣设置
+SHOP_OFFICIAL_DISCOUNT_TITLE_BOTH=§6官方定价 — 二合一折扣设置
+SHOP_OFFICIAL_CREATED_SUCCESS=§a官方定价商店创建成功！§f{0} — 当前价 {1} §7(折扣 {2:+.0f}%)
+SHOP_OFFICIAL_CREATED_SUCCESS_BOTH=§a官方二合一商店创建成功！§f{0} — 售价快照 {1} §7(折扣 {2:+.0f}%)
+SHOP_OFFICIAL_PRICE_BREAKDOWN=§7基准价: {0} → 当前价: {1}
+SHOP_OFFICIAL_DISCOUNT_DISPLAY=§7商店折扣: {0}
+SHOP_BOTH_BUY_FROM_SHOP_BUTTON=§a购买物品§r（从商店买）
+SHOP_BOTH_SELL_TO_SHOP_BUTTON=§b回收物品§r（卖给商店）
+SHOP_DISPLAY_PRICE_BOTH=§a买{0}§r/§b收{1}§r
+SHOP_DETAIL_BOTH_SELL_PRICE=§a出售 §7基准 {0} → 当前 {1}
+SHOP_DETAIL_BOTH_BUY_PRICE=§b回收 §7基准 {0} → 当前 {1}
+SHOP_PRICE_BOTH_LABEL=买卖价格
+SHOP_TYPE_PLAIN_BOTH={0}二合一商店 — 玩家可选择「购买」或「回收」
+# 官方定价 — 类型标签
+SHOP_TYPE_MANAGE_SELL_OFFICIAL=§d官方·出售商店§r：系统自动定价，其他玩家在此「购买」物品
+SHOP_TYPE_MANAGE_BUY_OFFICIAL=§d官方·收购商店§r：系统自动定价，其他玩家在此「出售」物品换钱
+SHOP_TYPE_MANAGE_BOTH_OFFICIAL=§d官方·二合一商店§r：系统自动定价，玩家可选择购买或回收
+SHOP_TYPE_TAG_SELL_OFFICIAL=§d[官方·出售]§r
+SHOP_TYPE_TAG_BUY_OFFICIAL=§d[官方·收购]§r
+SHOP_TYPE_TAG_BOTH_OFFICIAL=§d[官方·买卖]§r
+SHOP_TYPE_PLAIN_OFFICIAL_TAG=【官方定价】
+SHOP_MANAGE_TITLE_SELL_OFFICIAL=（官方·出售）
+SHOP_MANAGE_TITLE_BUY_OFFICIAL=（官方·收购）
+SHOP_MANAGE_TITLE_BOTH_OFFICIAL=（官方·买卖）
+# 官方定价 — 管理命令
+SHOP_MANAGE_PRICES_TITLE=§6官方定价管理
+SHOP_MANAGE_PRICES_CONTENT=§f当前有 {0} 个物品配置了官方定价。\n动态定价: {1}\n每日波动: {2}\n\n§e子命令:\n§f/ssmanage pricereload §7— 重新加载定价配置\n§f/ssmanage pricereset §7— 重置所有动态调整
+SHOP_MANAGE_PRICERELOAD_SUCCESS=§a官方定价配置已重新加载
+SHOP_MANAGE_PRICERESET_SUCCESS=§a所有动态价格调整已重置
+SHOP_MANAGE_PRICES_NO_ITEMS=§c暂无官方定价物品
+SHOP_BUY_SUSPENDED=§c§l[回收暂停]§r
+SHOP_BUY_SUSPENDED_DETAIL=§c回收价格已超过出售价格，回收功能暂时停止。§7等待价格恢复后自动重新开放。
+SHOP_BUY_SUSPENDED_MSG=§c该物品回收价格已超过出售价格，回收功能暂时停止！§7请等待价格恢复。
+# 快速设置自动定价商店
+QS_OP_ONLY=§c只有 OP 可以使用快速设置指令
+QS_USAGE=§c用法: /ss qs start [sell|buy] 或 /ss qs stop
+QS_ALREADY_ACTIVE=§e你已经处于自动定价商店快速设置模式。手持物品右键按钮即可创建，/ss qs stop 结束
+QS_NOT_ACTIVE=§c你当前不在快速设置模式
+QS_START_SUCCESS=§a已进入{0}快速设置模式。
+§f手持物品右键木牌即可创建。
+§e输入 /ss qs stop 结束
+QS_STOP_SUCCESS=§a已退出自动定价商店快速设置模式
+QS_NO_HELD_ITEM=§c请手持要上架的物品后再交互按钮
+QS_NO_OFFICIAL_PRICE=§c物品 §e{0} §c没有官方定价，无法快速设置为自动定价商店
+QS_PLACEHOLDER_PRICE=§e物品 §f{0} §e尚未配置官方定价，暂以 §c99999 §e作为出售价；回收需配置 buy 价后开放。请在 official_prices.yml 补充后执行 /ssmanage pricereload
+QS_CONTINUE_HINT=§7仍在快速设置中：可继续手持物品点按钮，或输入 /ss qs stop 结束
+
+# 木牌文案
+SIGN_TITLE_PLAYER_SELL=[玩家商店-出售]
+SIGN_TITLE_PLAYER_BUY=[玩家商店-收购]
+SIGN_TITLE_OFFICIAL_SELL=[官方商店-出售]
+SIGN_TITLE_OFFICIAL_BUY=[官方商店-收购]
+SIGN_TITLE_BARTER=[玩家交易]
+SIGN_LINE_ITEM=物品：{0}
+SIGN_LINE_PRICE=价格：{0}
+SIGN_LINE_RATIO=比例：{0}:{1}
+SIGN_LINE_STOCK=库存：{0}
+SHOP_NOT_SIGN=§c你正在交互的是 §e{0} §c，请使用木牌来创建商店！
+QS_USAGE=§c用法: /ss qs start [sell|buy] 或 /ss qs stop
+QS_MODE_SELL=官方出售
+QS_MODE_BUY=官方收购
+QS_START_SUCCESS=§a已进入{0}快速设置模式。
+§f手持物品右键木牌即可创建。
+§e输入 /ss qs stop 结束
+QS_ALREADY_ACTIVE=§e你已在快速设置模式中。手持物品右键木牌，或 /ss qs stop 结束
+QS_CONTINUE_HINT=§7仍在快速设置中：可继续手持物品点木牌，或输入 /ss qs stop 结束

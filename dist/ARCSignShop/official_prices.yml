@@ -1,0 +1,782 @@
+# 官方定价配置文件
+# 物品类型: 出售价(sell)、回收价(buy)、显示名称(display_name)
+# sell: 玩家从系统商店购买的价格
+# display_name: 可选，商店列表显示名（建议中文）
+# buy: 玩家出售给系统商店的价格
+# 分类: 由上方「# ========== 分类名 ==========」分区注释决定；也可写 category: 覆盖
+# 注意: buy 必须小于 sell，否则回收功能会被自动暂停
+
+prices:
+  # ========== 矿物与宝石 ==========
+  minecraft:diamond:
+    display_name: 钻石
+    sell: 10000
+    buy: 5000
+  minecraft:iron_ingot:
+    display_name: 铁锭
+    sell: 200
+    buy: 100
+  minecraft:gold_ingot:
+    display_name: 金锭
+    sell: 1000
+    buy: 500
+  minecraft:coal:
+    display_name: 煤炭
+    sell: 40
+    buy: 20
+  minecraft:emerald:
+    display_name: 绿宝石
+    sell: 8000
+    buy: 4000
+  minecraft:lapis_lazuli:
+    display_name: 青金石
+    sell: 300
+    buy: 150
+  minecraft:redstone:
+    display_name: 红石
+    sell: 60
+    buy: 30
+  minecraft:netherite_ingot:
+    display_name: 下界合金锭
+    sell: 100000
+    buy: 50000
+  minecraft:netherite_scrap:
+    display_name: 下界合金碎片
+    sell: 30000
+    buy: 15000
+  minecraft:quartz:
+    display_name: 下界石英
+    sell: 80
+    buy: 40
+  minecraft:copper_ingot:
+    display_name: 铜锭
+    sell: 50
+    buy: 25
+  minecraft:amethyst_shard:
+    display_name: 紫水晶碎片
+    sell: 120
+    buy: 60
+  minecraft:ancient_debris:
+    display_name: 远古残骸
+    sell: 60000
+    buy: 30000
+
+  # ========== 矿石方块 ==========
+  minecraft:diamond_block:
+    display_name: 钻石块
+    sell: 90000
+    buy: 45000
+  minecraft:iron_block:
+    display_name: 铁块
+    sell: 1800
+    buy: 900
+  minecraft:gold_block:
+    display_name: 金块
+    sell: 9000
+    buy: 4500
+  minecraft:emerald_block:
+    display_name: 绿宝石块
+    sell: 72000
+    buy: 36000
+  minecraft:lapis_block:
+    display_name: 青金石块
+    sell: 2700
+    buy: 1350
+  minecraft:redstone_block:
+    display_name: 红石块
+    sell: 540
+    buy: 270
+  minecraft:coal_block:
+    display_name: 煤炭块
+    sell: 360
+    buy: 180
+  minecraft:copper_block:
+    display_name: 铜块
+    sell: 450
+    buy: 225
+  minecraft:netherite_block:
+    display_name: 下界合金块
+    sell: 900000
+    buy: 450000
+  minecraft:obsidian:
+    display_name: 黑曜石
+    sell: 100
+    buy: 50
+
+  # ========== 工具与武器 ==========
+  minecraft:diamond_sword:
+    display_name: 钻石剑
+    sell: 25000
+    buy: 12500
+  minecraft:diamond_pickaxe:
+    display_name: 钻石镐
+    sell: 30000
+    buy: 15000
+  minecraft:diamond_axe:
+    display_name: 钻石斧
+    sell: 30000
+    buy: 15000
+  minecraft:diamond_shovel:
+    display_name: 钻石锹
+    sell: 12000
+    buy: 6000
+  minecraft:diamond_hoe:
+    display_name: 钻石锄
+    sell: 25000
+    buy: 12500
+  minecraft:iron_sword:
+    display_name: 铁剑
+    sell: 500
+    buy: 250
+  minecraft:iron_pickaxe:
+    display_name: 铁镐
+    sell: 600
+    buy: 300
+  minecraft:iron_axe:
+    display_name: 铁斧
+    sell: 600
+    buy: 300
+  minecraft:iron_shovel:
+    display_name: 铁锹
+    sell: 300
+    buy: 150
+  minecraft:iron_hoe:
+    display_name: 铁锄
+    sell: 500
+    buy: 250
+  minecraft:stone_sword:
+    display_name: 石剑
+    sell: 100
+    buy: 50
+  minecraft:stone_pickaxe:
+    display_name: 石镐
+    sell: 100
+    buy: 50
+  minecraft:stone_axe:
+    display_name: 石斧
+    sell: 100
+    buy: 50
+  minecraft:wooden_sword:
+    display_name: 木剑
+    sell: 20
+    buy: 10
+  minecraft:wooden_pickaxe:
+    display_name: 木镐
+    sell: 20
+    buy: 10
+  minecraft:wooden_axe:
+    display_name: 木斧
+    sell: 20
+    buy: 10
+  minecraft:bow:
+    display_name: 弓
+    sell: 600
+    buy: 300
+  minecraft:crossbow:
+    display_name: 弩
+    sell: 1000
+    buy: 500
+  minecraft:trident:
+    display_name: 三叉戟
+    sell: 80000
+    buy: 40000
+  minecraft:shears:
+    display_name: 剪刀
+    sell: 200
+    buy: 100
+  minecraft:flint_and_steel:
+    display_name: 打火石
+    sell: 200
+    buy: 100
+
+  # ========== 防具 ==========
+  minecraft:diamond_helmet:
+    display_name: 钻石头盔
+    sell: 60000
+    buy: 30000
+  minecraft:diamond_chestplate:
+    display_name: 钻石胸甲
+    sell: 100000
+    buy: 50000
+  minecraft:diamond_leggings:
+    display_name: 钻石护腿
+    sell: 85000
+    buy: 42500
+  minecraft:diamond_boots:
+    display_name: 钻石靴子
+    sell: 50000
+    buy: 25000
+  minecraft:iron_helmet:
+    display_name: 铁头盔
+    sell: 1000
+    buy: 500
+  minecraft:iron_chestplate:
+    display_name: 铁胸甲
+    sell: 1600
+    buy: 800
+  minecraft:iron_leggings:
+    display_name: 铁护腿
+    sell: 1400
+    buy: 700
+  minecraft:iron_boots:
+    display_name: 铁靴子
+    sell: 800
+    buy: 400
+  minecraft:netherite_helmet:
+    display_name: 下界合金头盔
+    sell: 150000
+    buy: 75000
+  minecraft:netherite_chestplate:
+    display_name: 下界合金胸甲
+    sell: 250000
+    buy: 125000
+  minecraft:netherite_leggings:
+    display_name: 下界合金护腿
+    sell: 200000
+    buy: 100000
+  minecraft:netherite_boots:
+    display_name: 下界合金靴子
+    sell: 120000
+    buy: 60000
+  minecraft:shield:
+    display_name: 盾牌
+    sell: 600
+    buy: 300
+  minecraft:elytra:
+    display_name: 鞘翅
+    sell: 200000
+    buy: 100000
+  minecraft:turtle_helmet:
+    display_name: 海龟壳
+    sell: 4000
+    buy: 2000
+
+  # ========== 食物 ==========
+  minecraft:apple:
+    display_name: 苹果
+    sell: 30
+    buy: 15
+  minecraft:golden_apple:
+    display_name: 金苹果
+    sell: 4000
+    buy: 2000
+  minecraft:enchanted_golden_apple:
+    display_name: 附魔金苹果
+    sell: 100000
+    buy: 50000
+  minecraft:bread:
+    display_name: 面包
+    sell: 20
+    buy: 10
+  minecraft:cooked_porkchop:
+    display_name: 熟猪排
+    sell: 40
+    buy: 20
+  minecraft:cooked_beef:
+    display_name: 熟牛排
+    sell: 50
+    buy: 25
+  minecraft:cooked_chicken:
+    display_name: 熟鸡肉
+    sell: 40
+    buy: 20
+  minecraft:cooked_mutton:
+    display_name: 熟羊肉
+    sell: 40
+    buy: 20
+  minecraft:cooked_cod:
+    display_name: 熟鳕鱼
+    sell: 30
+    buy: 15
+  minecraft:cooked_salmon:
+    display_name: 熟鲑鱼
+    sell: 30
+    buy: 15
+  minecraft:golden_carrot:
+    display_name: 金胡萝卜
+    sell: 3000
+    buy: 1500
+  minecraft:pumpkin_pie:
+    display_name: 南瓜派
+    sell: 50
+    buy: 25
+  minecraft:cake:
+    display_name: 蛋糕
+    sell: 100
+    buy: 50
+  minecraft:cookie:
+    display_name: 曲奇
+    sell: 16
+    buy: 8
+  minecraft:melon_slice:
+    display_name: 西瓜片
+    sell: 10
+    buy: 5
+  minecraft:sweet_berries:
+    display_name: 甜浆果
+    sell: 10
+    buy: 5
+  minecraft:baked_potato:
+    display_name: 烤马铃薯
+    sell: 24
+    buy: 12
+  minecraft:mushroom_stew:
+    display_name: 蘑菇煲
+    sell: 60
+    buy: 30
+  minecraft:rabbit_stew:
+    display_name: 兔肉煲
+    sell: 100
+    buy: 50
+  minecraft:beetroot_soup:
+    display_name: 甜菜汤
+    sell: 50
+    buy: 25
+
+  # ========== 农业与种植 ==========
+  minecraft:wheat:
+    display_name: 小麦
+    sell: 16
+    buy: 8
+  minecraft:wheat_seeds:
+    display_name: 小麦种子
+    sell: 6
+    buy: 3
+  minecraft:carrot:
+    display_name: 胡萝卜
+    sell: 10
+    buy: 5
+  minecraft:potato:
+    display_name: 马铃薯
+    sell: 10
+    buy: 5
+  minecraft:beetroot:
+    display_name: 甜菜根
+    sell: 10
+    buy: 5
+  minecraft:pumpkin_seeds:
+    display_name: 南瓜种子
+    sell: 10
+    buy: 5
+  minecraft:melon_seeds:
+    display_name: 西瓜种子
+    sell: 10
+    buy: 5
+  minecraft:beetroot_seeds:
+    display_name: 甜菜种子
+    sell: 10
+    buy: 5
+  minecraft:nether_wart:
+    display_name: 下界疣
+    sell: 40
+    buy: 20
+  minecraft:sugar_cane:
+    display_name: 甘蔗
+    sell: 16
+    buy: 8
+  minecraft:cocoa_beans:
+    display_name: 可可豆
+    sell: 20
+    buy: 10
+
+  # ========== 炼药与酿造 ==========
+  minecraft:blaze_rod:
+    display_name: 烈焰棒
+    sell: 600
+    buy: 300
+  minecraft:blaze_powder:
+    display_name: 烈焰粉
+    sell: 300
+    buy: 150
+  minecraft:ghast_tear:
+    display_name: 恶魂之泪
+    sell: 1000
+    buy: 500
+  minecraft:magma_cream:
+    display_name: 岩浆膏
+    sell: 200
+    buy: 100
+  minecraft:fermented_spider_eye:
+    display_name: 发酵蛛眼
+    sell: 60
+    buy: 30
+  minecraft:spider_eye:
+    display_name: 蜘蛛眼
+    sell: 20
+    buy: 10
+  minecraft:glass_bottle:
+    display_name: 玻璃瓶
+    sell: 10
+    buy: 5
+  minecraft:brewing_stand:
+    display_name: 酿造台
+    sell: 1000
+    buy: 500
+  minecraft:cauldron:
+    display_name: 炼药锅
+    sell: 800
+    buy: 400
+
+  # ========== 红石与机械 ==========
+  minecraft:redstone_torch:
+    display_name: 红石火把
+    sell: 100
+    buy: 50
+  minecraft:repeater:
+    display_name: 红石中继器
+    sell: 160
+    buy: 80
+  minecraft:comparator:
+    display_name: 红石比较器
+    sell: 240
+    buy: 120
+  minecraft:piston:
+    display_name: 活塞
+    sell: 300
+    buy: 150
+  minecraft:sticky_piston:
+    display_name: 粘性活塞
+    sell: 500
+    buy: 250
+  minecraft:observer:
+    display_name: 侦测器
+    sell: 400
+    buy: 200
+  minecraft:hopper:
+    display_name: 漏斗
+    sell: 1000
+    buy: 500
+  minecraft:dispenser:
+    display_name: 发射器
+    sell: 400
+    buy: 200
+  minecraft:dropper:
+    display_name: 投掷器
+    sell: 300
+    buy: 150
+  minecraft:noteblock:
+    display_name: 音符盒
+    sell: 200
+    buy: 100
+  minecraft:tnt:
+    display_name: TNT
+    sell: 600
+    buy: 300
+  minecraft:lever:
+    display_name: 拉杆
+    sell: 20
+    buy: 10
+  minecraft:stone_button:
+    display_name: 石头按钮
+    sell: 10
+    buy: 5
+
+  # ========== 建筑材料 ==========
+  minecraft:dirt:
+    display_name: 泥土
+    sell: 2
+    buy: 1
+  minecraft:stone:
+    display_name: 石头
+    sell: 10
+    buy: 5
+  minecraft:cobblestone:
+    display_name: 圆石
+    sell: 6
+    buy: 3
+  minecraft:stone_bricks:
+    display_name: 石砖
+    sell: 16
+    buy: 8
+  minecraft:oak_planks:
+    display_name: 橡木木板
+    sell: 10
+    buy: 5
+  minecraft:spruce_planks:
+    display_name: 云杉木板
+    sell: 10
+    buy: 5
+  minecraft:birch_planks:
+    display_name: 白桦木板
+    sell: 10
+    buy: 5
+  minecraft:glass:
+    display_name: 玻璃
+    sell: 16
+    buy: 8
+  minecraft:sand:
+    display_name: 沙子
+    sell: 6
+    buy: 3
+  minecraft:sandstone:
+    display_name: 砂岩
+    sell: 16
+    buy: 8
+  minecraft:bricks:
+    display_name: 砖块
+    sell: 20
+    buy: 10
+  minecraft:clay_ball:
+    display_name: 粘土
+    sell: 10
+    buy: 5
+  minecraft:nether_bricks:
+    display_name: 下界砖
+    sell: 20
+    buy: 10
+  minecraft:quartz_block:
+    display_name: 石英块
+    sell: 720
+    buy: 360
+  minecraft:purpur_block:
+    display_name: 紫珀块
+    sell: 60
+    buy: 30
+
+  # ========== 装饰与杂项 ==========
+  minecraft:torch:
+    display_name: 火把
+    sell: 10
+    buy: 5
+  minecraft:lantern:
+    display_name: 灯笼
+    sell: 100
+    buy: 50
+  minecraft:soul_lantern:
+    display_name: 灵魂灯笼
+    sell: 100
+    buy: 50
+  minecraft:campfire:
+    display_name: 营火
+    sell: 160
+    buy: 80
+  minecraft:bone_meal:
+    display_name: 骨粉
+    sell: 10
+    buy: 5
+  minecraft:ink_sac:
+    display_name: 墨囊
+    sell: 16
+    buy: 8
+  minecraft:glowstone_dust:
+    display_name: 荧石粉
+    sell: 40
+    buy: 20
+  minecraft:glow_ink_sac:
+    display_name: 荧光墨囊
+    sell: 80
+    buy: 40
+  minecraft:string:
+    display_name: 线
+    sell: 10
+    buy: 5
+  minecraft:feather:
+    display_name: 羽毛
+    sell: 10
+    buy: 5
+  minecraft:leather:
+    display_name: 皮革
+    sell: 20
+    buy: 10
+  minecraft:slime_ball:
+    display_name: 粘液球
+    sell: 40
+    buy: 20
+  minecraft:egg:
+    display_name: 鸡蛋
+    sell: 10
+    buy: 5
+  minecraft:arrow:
+    display_name: 箭
+    sell: 6
+    buy: 3
+  minecraft:bucket:
+    display_name: 桶
+    sell: 200
+    buy: 100
+
+  # ========== 稀有与特殊物品 ==========
+  minecraft:ender_pearl:
+    display_name: 末影珍珠
+    sell: 400
+    buy: 200
+  minecraft:ender_eye:
+    display_name: 末影之眼
+    sell: 800
+    buy: 400
+  minecraft:nether_star:
+    display_name: 下界之星
+    sell: 60000
+    buy: 30000
+  minecraft:totem_of_undying:
+    display_name: 不死图腾
+    sell: 100000
+    buy: 50000
+  minecraft:dragon_breath:
+    display_name: 龙息
+    sell: 10000
+    buy: 5000
+  minecraft:experience_bottle:
+    display_name: 经验瓶
+    sell: 100
+    buy: 50
+  minecraft:name_tag:
+    display_name: 命名牌
+    sell: 1000
+    buy: 500
+  minecraft:lead:
+    display_name: 拴绳
+    sell: 200
+    buy: 100
+  minecraft:saddle:
+    display_name: 鞍
+    sell: 600
+    buy: 300
+  minecraft:enchanted_book:
+    display_name: 附魔书
+    sell: 2000
+    buy: 1000
+  minecraft:firework_rocket:
+    display_name: 烟花火箭
+    sell: 40
+    buy: 20
+  minecraft:banner:
+    display_name: 旗帜
+    sell: 100
+    buy: 50
+
+  # ========== 海洋相关 ==========
+  minecraft:prismarine_shard:
+    display_name: 海晶碎片
+    sell: 60
+    buy: 30
+  minecraft:prismarine_crystals:
+    display_name: 海晶砂粒
+    sell: 160
+    buy: 80
+  minecraft:nautilus_shell:
+    display_name: 鹦鹉螺壳
+    sell: 2000
+    buy: 1000
+  minecraft:heart_of_the_sea:
+    display_name: 海洋之心
+    sell: 60000
+    buy: 30000
+  minecraft:scute:
+    display_name: 鳞甲
+    sell: 400
+    buy: 200
+
+  # ========== 下界相关 ==========
+  minecraft:soul_sand:
+    display_name: 灵魂沙
+    sell: 30
+    buy: 15
+  minecraft:netherrack:
+    display_name: 下界岩
+    sell: 2
+    buy: 1
+  minecraft:basalt:
+    display_name: 玄武岩
+    sell: 10
+    buy: 5
+  minecraft:blackstone:
+    display_name: 黑石
+    sell: 16
+    buy: 8
+  minecraft:crying_obsidian:
+    display_name: 哭泣的黑曜石
+    sell: 400
+    buy: 200
+  minecraft:respawn_anchor:
+    display_name: 重生锚
+    sell: 24000
+    buy: 12000
+
+  # ========== 末地相关 ==========
+  minecraft:end_stone:
+    display_name: 末地石
+    sell: 20
+    buy: 10
+  minecraft:chorus_fruit:
+    display_name: 紫颂果
+    sell: 30
+    buy: 15
+  minecraft:shulker_shell:
+    display_name: 潜影壳
+    sell: 4000
+    buy: 2000
+  minecraft:ender_chest:
+    display_name: 末影箱
+    sell: 3000
+    buy: 1500
+  minecraft:end_rod:
+    display_name: 末地烛
+    sell: 60
+    buy: 30
+
+  # ========== 染料 ==========
+  minecraft:black_dye:
+    display_name: 黑色染料
+    sell: 20
+    buy: 10
+  minecraft:red_dye:
+    display_name: 红色染料
+    sell: 20
+    buy: 10
+  minecraft:green_dye:
+    display_name: 绿色染料
+    sell: 20
+    buy: 10
+  minecraft:brown_dye:
+    display_name: 棕色染料
+    sell: 20
+    buy: 10
+  minecraft:blue_dye:
+    display_name: 蓝色染料
+    sell: 20
+    buy: 10
+  minecraft:yellow_dye:
+    display_name: 黄色染料
+    sell: 20
+    buy: 10
+  minecraft:white_dye:
+    display_name: 白色染料
+    sell: 20
+    buy: 10
+  minecraft:pink_dye:
+    display_name: 粉红色染料
+    sell: 20
+    buy: 10
+  minecraft:orange_dye:
+    display_name: 橙色染料
+    sell: 20
+    buy: 10
+  minecraft:light_blue_dye:
+    display_name: 淡蓝色染料
+    sell: 20
+    buy: 10
+  minecraft:magenta_dye:
+    display_name: 品红色染料
+    sell: 20
+    buy: 10
+  minecraft:lime_dye:
+    display_name: 黄绿色染料
+    sell: 20
+    buy: 10
+  minecraft:cyan_dye:
+    display_name: 青色染料
+    sell: 20
+    buy: 10
+  minecraft:purple_dye:
+    display_name: 紫色染料
+    sell: 20
+    buy: 10
+  minecraft:light_gray_dye:
+    display_name: 淡灰色染料
+    sell: 20
+    buy: 10
+  minecraft:gray_dye:
+    display_name: 灰色染料
+    sell: 20
+    buy: 10

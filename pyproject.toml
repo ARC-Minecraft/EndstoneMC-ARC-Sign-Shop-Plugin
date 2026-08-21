@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "endstone_arc_sign_shop"
-version = "1.0.6"
+version = "1.0.7"
 dependencies = []
 authors = [
     { name = "DEVILENMO", email = "DEVILENMO@gmail.com" },

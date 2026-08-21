@@ -11,7 +11,7 @@ from endstone.form import ActionForm, ModalForm, Label, TextInput
 from endstone.block import Block
 
 try:
-    # 文档 latest 已有 Sign；当前 PyPI 0.11.9 尚未导出，需兼容
+    # Sign 目前只在 Endstone develop 分支，预计随 0.12 发布；正式版 0.11.x 尚未导出
     from endstone.block import Sign as _SignType
 except ImportError:  # pragma: no cover
     _SignType = None  # type: ignore[misc, assignment]
@@ -66,6 +66,7 @@ class ARCSignShopPlugin(Plugin):
         self.setting_shop_player = {}  # 玩家名 -> 商店设置数据
         self.quick_setup_players = {}  # 玩家名 -> 'both'|'sell'|'buy'（默认 both）
         self.CHUNK_SIZE = 16  # 区块大小，用于优化查询
+        self._sign_api_warned = False
     
     def _safe_log(self, level: str, message: str):
         """
@@ -2785,19 +2786,18 @@ class ARCSignShopPlugin(Plugin):
 
             lines = self._build_sign_lines(shop_data)
 
-            # 优先：Endstone Sign API（latest 文档；装上后自动启用）
+            # Endstone Sign API（0.12+ 提供后自动启用）
             if self._try_update_sign_via_api(block, lines):
                 return True
 
-            # 回退：Bedrock /data merge block（当前 0.11.9 无 Sign 类时）
-            if self._try_update_sign_via_data_command(block, lines):
-                return True
-
-            self._safe_log(
-                'warning',
-                "[ARCSignShop] Cannot write sign text: endstone.block.Sign unavailable "
-                "and /data merge fallback failed. Shop still works on interact.",
-            )
+            # 基岩版没有能写方块实体 NBT 的原生命令，只能等 Sign API
+            if not self._sign_api_warned:
+                self._sign_api_warned = True
+                self._safe_log(
+                    'info',
+                    "[ARCSignShop] endstone.block.Sign unavailable in this Endstone build "
+                    "(needs 0.12+); sign faces stay blank, shops still work on interact.",
+                )
             return False
         except Exception as e:
             self._safe_log('error', f"[ARCSignShop] Update sign text error: {str(e)}")
@@ -2831,37 +2831,6 @@ class ARCSignShopPlugin(Plugin):
             return bool(ok)
         except Exception as e:
             self._safe_log('warning', f"[ARCSignShop] Sign API write failed: {e}")
-            return False
-
-    def _bedrock_dimension_id(self, dimension_name: str) -> str:
-        name = (dimension_name or "").strip().lower()
-        if name in ("nether", "the_nether", "minecraft:nether"):
-            return "nether"
-        if name in ("the_end", "end", "minecraft:the_end"):
-            return "the_end"
-        return "overworld"
-
-    def _escape_bedrock_sign_text(self, text: str) -> str:
-        """转义写入 FrontText.Text 的字符串。"""
-        return (text or "").replace("\\", "\\\\").replace('"', '\\"')
-
-    def _try_update_sign_via_data_command(self, block: Block, lines: list) -> bool:
-        """
-        无 Sign API 时用 /data merge block 写正面四行并打蜡。
-        Bedrock FrontText.Text 用 \\n 分隔四行。
-        """
-        try:
-            padded = [(lines[i] if i < len(lines) else "") for i in range(4)]
-            joined = "\\n".join(self._escape_bedrock_sign_text(line) for line in padded)
-            x, y, z = int(block.x), int(block.y), int(block.z)
-            dim = self._bedrock_dimension_id(getattr(getattr(block, "dimension", None), "name", "") or "")
-            # IsWaxed 防止玩家改字
-            nbt = f'{{FrontText:{{Text:"{joined}"}},IsWaxed:1b}}'
-            cmd = f"execute in {dim} run data merge block {x} {y} {z} {nbt}"
-            ok = self.server.dispatch_command(self.server.command_sender, cmd)
-            return bool(ok)
-        except Exception as e:
-            self._safe_log('warning', f"[ARCSignShop] Sign /data merge fallback failed: {e}")
             return False
 
     def _refresh_shop_sign_by_data(self, shop_data) -> None:

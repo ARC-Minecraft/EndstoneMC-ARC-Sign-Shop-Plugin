@@ -1,9 +1,9 @@
 # 弧光木牌商店插件 (ARC Sign Shop Plugin)
 
-[![版本](https://img.shields.io/badge/版本-1.0.6-blue.svg)](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Sign-Shop-Plugin)
+[![版本](https://img.shields.io/badge/版本-1.0.7-blue.svg)](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Sign-Shop-Plugin)
 [![EndStone](https://img.shields.io/badge/EndStone-0.10+-green.svg)](https://github.com/EndstoneMC/endstone)
 
-用木牌创建商店：右键开店/交易，牌面自动显示商店信息。
+用木牌创建商店：右键开店/交易。牌面文字需 Endstone 0.12+，当前正式版下牌面保持空白，商店功能全靠右键交互（见文末说明）。
 
 ## 商店类型
 
@@ -38,6 +38,10 @@
 
 ## 安装
 
-将 `endstone_arc_sign_shop-1.0.6-*.whl` 放入服务器 `plugins` 目录后重启。数据目录：`plugins/ARCSignShop/`。
+将 `endstone_arc_sign_shop-1.0.7-*.whl` 放入服务器 `plugins` 目录后重启。数据目录：`plugins/ARCSignShop/`。
 
-> 说明：`endstone.block.Sign` 目前仅在 [latest 文档](https://endstone.dev/latest/reference/python/block/#endstone.block.Sign) 出现，PyPI **0.11.9** 尚未导出。本插件在无 Sign 时回退为 `/data merge block` 写牌面；Endstone 正式放出 Sign 后会自动走原生 API。
+## 关于牌面文字
+
+`endstone.block.Sign` 只存在于 Endstone 的 `develop` 分支（[ee4106d](https://github.com/EndstoneMC/endstone/commit/ee4106dd3b18e7d6f2a57719dc3b1e392aadf452)，2026-08-10），它在 `v0.11` 分支切出之后才合入，因此正式版 **0.11.9** 及后续 0.11.x 补丁都不包含，预计随 0.12 发布。你在 [latest 文档](https://endstone.dev/latest/reference/python/block/#endstone.block.Sign) 看到的是开发版，对应正式版的是 [stable 文档](https://endstone.dev/stable/reference/python/block/)。
+
+基岩版没有可写方块实体 NBT 的原生命令（`/data` 是 Java 版的），所以在 Sign 发布前无法写牌面。插件会自动探测该 API：装上带 Sign 的版本后无需改配置，牌面即开始显示商店信息。

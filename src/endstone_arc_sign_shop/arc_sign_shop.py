@@ -30,9 +30,11 @@ class ARCSignShopPlugin(Plugin):
     commands = {
         "ss": {
             "description": "Sign shop commands",
+            # 与按钮商店 /bs、弧光核心 /connecttoserver 同风格；勿用可选枚举（会注册失败只剩 stop）
             "usages": [
                 "/ss",
-                "/ss qs start (both|sell|buy)[mode: SsQsMode]",
+                "/ss qs start",
+                "/ss qs start <mode: str>",
                 "/ss qs stop",
             ],
             "permissions": ["arc_sign_shop.command.ss"],
@@ -41,7 +43,13 @@ class ARCSignShopPlugin(Plugin):
             "description": "Manage sign shops, op only.",
             "usages": [
                 "/ssmanage",
-                "/ssmanage (list|clear|reload|prices|pricereload|pricereset|delns)<action: SsManageAction>",
+                "/ssmanage list",
+                "/ssmanage clear",
+                "/ssmanage reload",
+                "/ssmanage prices",
+                "/ssmanage pricereload",
+                "/ssmanage pricereset",
+                "/ssmanage delns",
                 "/ssmanage delns [namespace: str]",
             ],
         },

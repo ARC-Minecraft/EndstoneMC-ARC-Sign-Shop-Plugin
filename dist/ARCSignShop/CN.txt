@@ -336,6 +336,8 @@ SHOP_BOTH_SELL_TO_SHOP_BUTTON=§b回收物品§r（卖给商店）
 SHOP_DISPLAY_PRICE_BOTH=§a买{0}§r/§b收{1}§r
 SHOP_DETAIL_BOTH_SELL_PRICE=§a出售 §7基准 {0} → 当前 {1}
 SHOP_DETAIL_BOTH_BUY_PRICE=§b回收 §7基准 {0} → 当前 {1}
+SHOP_DETAIL_CURRENT_PRICE=§e当前单价: {0}
+SHOP_DETAIL_BASE_PRICE=§7基准价: {0}
 SHOP_PRICE_BOTH_LABEL=买卖价格
 SHOP_TYPE_PLAIN_BOTH={0}二合一商店 — 玩家可选择「购买」或「回收」
 # 官方定价 — 类型标签

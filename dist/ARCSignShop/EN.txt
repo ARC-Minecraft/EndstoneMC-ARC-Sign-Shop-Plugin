@@ -200,3 +200,5 @@ SHOP_TRADE_MODE_ERROR=§cFailed to update shop trade mode
 SHOP_TRADE_MODE_OFFICIAL_ONLY=§cOnly official auto-priced shops can toggle sell/buy
 SHOP_MARKET_REQUIRED=§cInstall and enable ARC Market Economy (arc_market_economy) for auto pricing
 SHOP_MANAGE_PRICES_MARKET_HINT=§7Use /market prices|reload|reset for market admin
+SHOP_DETAIL_CURRENT_PRICE=§eCurrent unit price: {0}
+SHOP_DETAIL_BASE_PRICE=§7Base price: {0}

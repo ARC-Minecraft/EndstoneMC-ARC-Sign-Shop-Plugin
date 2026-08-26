@@ -47,7 +47,7 @@ class LanguageManager:
             LanguageManager.language_dict[target_lang][key] = ""
 
         if not LanguageManager.language_dict[target_lang][key]:
-            print(f'[ARC Core]Key {key} not found in language file {target_lang}.txt.')
+            print(f'[ARCSignShop] Key {key} not found in language file {target_lang}.txt.')
             return ''
         else:
             return LanguageManager.language_dict[target_lang][key]

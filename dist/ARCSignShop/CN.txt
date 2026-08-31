@@ -375,6 +375,9 @@ QS_NO_OFFICIAL_PRICE=§c物品 §e{0} §c没有官方定价，无法快速设置
 QS_PLACEHOLDER_PRICE=§e物品 §f{0} §e不在价目中，已自动写入市场经济（sell/buy=0）。请稍后在 official_prices.yml 改价并 /market reload
 QS_CONTINUE_HINT=§7仍在快速设置中：可继续手持物品点木牌，或输入 /ss qs stop 结束
 
+# 版本兼容
+SIGN_API_INCOMPATIBLE=§c[木牌商店] 当前 Endstone 版本不兼容：缺少 endstone.block.Sign API（需 Endstone 0.12+）。请升级 Endstone，或改用弧光按钮商店插件 (arc_button_shop / /bs)。
+
 # 木牌文案
 SIGN_TITLE_PLAYER_SELL=[玩家商店-出售]
 SIGN_TITLE_PLAYER_BUY=[玩家商店-收购]

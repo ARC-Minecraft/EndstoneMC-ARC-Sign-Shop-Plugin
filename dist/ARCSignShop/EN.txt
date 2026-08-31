@@ -163,6 +163,8 @@ QS_PLACEHOLDER_PRICE=§eItem §f{0} §ewas missing from the catalog and was auto
 QS_CONTINUE_HINT=§7Still in quick setup: hold an item and click another sign, or /ss qs stop
 
 # Sign text
+SIGN_API_INCOMPATIBLE=§c[Sign Shop] Incompatible Endstone version: endstone.block.Sign API missing (requires Endstone 0.12+). Upgrade Endstone or use ARC Button Shop (arc_button_shop / /bs).
+
 SIGN_TITLE_PLAYER_SELL=[Player-Sell]
 SIGN_TITLE_PLAYER_BUY=[Player-Buy]
 SIGN_TITLE_OFFICIAL_BOTH=[Official]

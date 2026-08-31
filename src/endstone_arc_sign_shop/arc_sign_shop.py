@@ -66,7 +66,6 @@ class ARCSignShopPlugin(Plugin):
         self.setting_shop_player = {}  # 玩家名 -> 商店设置数据
         self.quick_setup_players = {}  # 玩家名 -> 'both'|'sell'|'buy'（默认 both）
         self.CHUNK_SIZE = 16  # 区块大小，用于优化查询
-        self._sign_api_warned = False
     
     def _safe_log(self, level: str, message: str):
         """
@@ -96,7 +95,8 @@ class ARCSignShopPlugin(Plugin):
         # 初始化设置管理器
         self.setting_manager = SettingManager()
         
-        # 背包管理：优先在 on_enable 挂载 arc_inventory；此处先占位
+        # 背包：on_enable 挂载 arc_inventory（优先公开 api_*）
+        self._arc_inventory = None
         self.inventory_manager = None
         
         # 初始化默认配置
@@ -111,11 +111,24 @@ class ARCSignShopPlugin(Plugin):
         
         # 官方自动定价由 arc_market_economy 提供
 
+    def _require_sign_api(self) -> None:
+        """Sign API 为硬依赖；不可用则拒绝启用并提示改用按钮商店。"""
+        if _SignType is not None:
+            return
+        msg = self.language_manager.GetText("SIGN_API_INCOMPATIBLE")
+        self._safe_log(
+            "error",
+            "[ARCSignShop] endstone.block.Sign unavailable (requires Endstone 0.12+). "
+            "Upgrade Endstone or use arc_button_shop instead.",
+        )
+        raise RuntimeError(msg)
+
     def on_enable(self) -> None:
         self._safe_log('info', "[ARCSignShop] on_enable is called!")
+        self._require_sign_api()
         self.register_events(self)
 
-        # 背包：强制使用弧光背包管理器（不再内嵌回退）
+        # 背包：强制使用弧光背包管理器（优先 api_*，回退 InventoryManager）
         self._init_inventory_manager()
 
         # 初始化经济插件 - 检查 arc_core 优先，然后 umoney
@@ -125,22 +138,23 @@ class ARCSignShopPlugin(Plugin):
         self._register_scheduled_tasks()
 
     def _init_inventory_manager(self, log_failure: bool = True) -> None:
-        """强制挂载 arc_inventory；未安装则禁用背包相关功能。"""
-        if self.inventory_manager is not None:
+        """挂载 arc_inventory 插件与底层管理器；未安装则禁用背包相关功能。"""
+        if self._arc_inventory is not None or self.inventory_manager is not None:
             return
         try:
             inv_plugin = self.server.plugin_manager.get_plugin("arc_inventory")
             if inv_plugin is not None:
+                self._arc_inventory = inv_plugin
                 mgr = None
                 if hasattr(inv_plugin, "api_get_inventory_manager"):
                     mgr = inv_plugin.api_get_inventory_manager()
                 if mgr is None:
                     mgr = getattr(inv_plugin, "inventory_manager", None)
-                if mgr is not None:
-                    self.inventory_manager = mgr
+                self.inventory_manager = mgr
+                if mgr is not None or hasattr(inv_plugin, "api_has_item"):
                     self._safe_log(
                         "info",
-                        "[ARCSignShop] Using arc_inventory for backpack operations.",
+                        "[ARCSignShop] Using arc_inventory public API for backpack operations.",
                     )
                     return
         except Exception as e:
@@ -151,15 +165,15 @@ class ARCSignShopPlugin(Plugin):
         if log_failure:
             self._safe_log(
                 "error",
-                "[ARCSignShop] arc_inventory is REQUIRED. "
+                "[ARCSignShop] arc_inventory is REQUIRED (>=0.1.4 recommended). "
                 "Install endstone_arc_inventory and restart; shop item operations are disabled until then.",
             )
 
     def _require_inventory_manager(self, player=None) -> bool:
-        """背包管理器可用时返回 True；启动时未挂上则现场再解析一次。"""
-        if self.inventory_manager is None:
+        """背包 API 可用时返回 True；启动时未挂上则现场再解析一次。"""
+        if self._arc_inventory is None and self.inventory_manager is None:
             self._init_inventory_manager(log_failure=False)
-        if self.inventory_manager is not None:
+        if self._arc_inventory is not None or self.inventory_manager is not None:
             return True
         msg = "§c[木牌商店] 未安装弧光背包管理器 (arc_inventory)，无法操作物品。请联系管理员安装后重启。"
         if player is not None:
@@ -170,16 +184,49 @@ class ARCSignShopPlugin(Plugin):
         self._safe_log("error", "[ARCSignShop] inventory_manager unavailable")
         return False
 
+    def _inv_get_items(self, player):
+        inv = self._arc_inventory
+        if inv is not None and hasattr(inv, "api_get_inventory_items"):
+            return inv.api_get_inventory_items(player) or []
+        return self.inventory_manager.get_inventory_items(player) or []
+
+    def _inv_has_item(self, player, item_info: dict) -> bool:
+        inv = self._arc_inventory
+        if inv is not None and hasattr(inv, "api_has_item"):
+            return bool(inv.api_has_item(player, item_info))
+        return bool(self.inventory_manager.has_item(player, item_info))
+
+    def _inv_remove_item(self, player, item_info: dict) -> int:
+        """扣除物品；返回实际数量（0.1.4+）；布尔判断仍可用。"""
+        inv = self._arc_inventory
+        if inv is not None and hasattr(inv, "api_remove_item"):
+            return int(inv.api_remove_item(player, item_info) or 0)
+        result = self.inventory_manager.remove_item(player, item_info)
+        if isinstance(result, bool):
+            return int(item_info.get("count", 0) or 0) if result else 0
+        return int(result or 0)
+
+    def _inv_give_item(self, player, item_info: dict) -> bool:
+        inv = self._arc_inventory
+        if inv is not None and hasattr(inv, "api_give_item"):
+            return bool(inv.api_give_item(player, item_info))
+        return bool(self.inventory_manager.give_item(player, item_info))
+
+    def _inv_give_item_count(self, player, item_info: dict) -> int:
+        inv = self._arc_inventory
+        if inv is not None and hasattr(inv, "api_give_item_count"):
+            return int(inv.api_give_item_count(player, item_info) or 0)
+        return int(self.inventory_manager.give_item_count(player, item_info) or 0)
+
     def _give_items_to_player(self, player, item_info: dict) -> int:
         """发放物品并返回实际入包数量。"""
         if not self._require_inventory_manager(player):
             return 0
         try:
-            return int(self.inventory_manager.give_item_count(player, item_info) or 0)
+            return self._inv_give_item_count(player, item_info)
         except Exception as e:
             self._safe_log("error", f"[ARCSignShop] give_item_count failed: {e}")
             return 0
-
     def on_disable(self) -> None:
         self._safe_log('info', "[ARCSignShop] on_disable is called!")
         
@@ -421,7 +468,7 @@ class ARCSignShopPlugin(Plugin):
             if self._require_inventory_manager(player):
                 held_slot = getattr(inventory, 'held_item_slot', None)
                 if held_slot is not None:
-                    for inv_item in self.inventory_manager.get_inventory_items(player):
+                    for inv_item in self._inv_get_items(player):
                         if inv_item.get('slot_index') == held_slot:
                             return inv_item
             held_stack = getattr(inventory, 'item_in_main_hand', None)
@@ -917,7 +964,7 @@ class ARCSignShopPlugin(Plugin):
             if not self._require_inventory_manager(player):
                 return
             # 获取玩家背包中的物品
-            inventory_items = self.inventory_manager.get_inventory_items(player)
+            inventory_items = self._inv_get_items(player)
             
             if shop_type == "barter_give":
                 title = self.language_manager.GetText("SHOP_BARTER_GIVE_SELECT_TITLE")
@@ -1336,7 +1383,7 @@ class ARCSignShopPlugin(Plugin):
         try:
             if not self._require_inventory_manager(player):
                 return match_keys
-            for inv_item in self.inventory_manager.get_inventory_items(player):
+            for inv_item in self._inv_get_items(player):
                 item_type_id = inv_item.get('type')
                 if item_type_id:
                     match_keys.update(self._official_item_type_match_keys(item_type_id))
@@ -2153,7 +2200,7 @@ class ARCSignShopPlugin(Plugin):
                 # 出售/以物易物：创建时从背包扣除给出物 A
                 create_item = dict(item_info)
                 create_item.pop('barter_cost_item', None)
-                if not is_infinite and not self.inventory_manager.has_item(player, create_item):
+                if not is_infinite and not self._inv_has_item(player, create_item):
                     player.send_message(self.language_manager.GetText("SHOP_ITEM_NOT_FOUND"))
                     del self.setting_shop_player[player.name]
                     return
@@ -2206,7 +2253,7 @@ class ARCSignShopPlugin(Plugin):
             if is_infinite:
                 operation_success = True  # 无限商店不扣物品/预算
             elif shop_type in ("sell", "barter"):
-                operation_success = self.inventory_manager.remove_item(player, remove_payload)
+                operation_success = self._inv_remove_item(player, remove_payload)
                 if not operation_success:
                     player.send_message(self.language_manager.GetText("SHOP_ITEM_REMOVE_FAILED"))
             else:
@@ -2248,7 +2295,7 @@ class ARCSignShopPlugin(Plugin):
                     # 如果创建失败，根据商店类型进行回滚（无限商店未扣物品/预算，无需回滚）
                     if not is_infinite:
                         if shop_type in ("sell", "barter"):
-                            self.inventory_manager.give_item(player, remove_payload)
+                            self._inv_give_item(player, remove_payload)
                         else:
                             self._change_player_money(player.name, int(budget))
                     player.send_message(self.language_manager.GetText("SHOP_CREATE_FAILED"))
@@ -2331,26 +2378,26 @@ class ARCSignShopPlugin(Plugin):
                 return False, self.language_manager.GetText("SHOP_INSUFFICIENT_STOCK")
 
             cost_payload = self._shop_item_transaction_payload(cost_item, cost_total)
-            if not self.inventory_manager.has_item(player, cost_payload):
+            if not self._inv_has_item(player, cost_payload):
                 return False, self.language_manager.GetText("SHOP_BARTER_NOT_ENOUGH_COST").format(
                     cost_total, cost_item.get('name', '?')
                 )
 
-            if not self.inventory_manager.remove_item(player, cost_payload):
+            if not self._inv_remove_item(player, cost_payload):
                 return False, self.language_manager.GetText("SHOP_ITEM_REMOVE_FAILED")
 
             give_payload = self._shop_item_transaction_payload(item_data, give_total)
-            given_qty = self.inventory_manager.give_item_count(player, give_payload)
+            given_qty = self._inv_give_item_count(player, give_payload)
             if given_qty < give_total:
                 # 发货不足：收回已发部分并退还全部代价物
                 if given_qty > 0:
                     try:
-                        self.inventory_manager.remove_item(
+                        self._inv_remove_item(
                             player, self._shop_item_transaction_payload(item_data, given_qty)
                         )
                     except Exception:
                         pass
-                self.inventory_manager.give_item(player, cost_payload)
+                self._inv_give_item(player, cost_payload)
                 return False, self.language_manager.GetText("SHOP_INVENTORY_FULL")
 
             update_data = {
@@ -2431,7 +2478,7 @@ class ARCSignShopPlugin(Plugin):
             # 先尝试发放物品，按“实际发放数量”结算，避免背包满导致部分到账但全额退款的漏洞
             item_data = json.loads(shop_data['item_data'])
             purchase_item = self._shop_item_transaction_payload(item_data, quantity)
-            given_qty = self.inventory_manager.give_item_count(player, purchase_item)
+            given_qty = self._inv_give_item_count(player, purchase_item)
 
             if given_qty <= 0:
                 return False, self.language_manager.GetText("SHOP_ITEM_GIVE_FAILED")
@@ -2446,7 +2493,7 @@ class ARCSignShopPlugin(Plugin):
                 # 扣款失败：尝试把已发物品收回
                 try:
                     rollback_item = self._shop_item_transaction_payload(item_data, given_qty)
-                    self.inventory_manager.remove_item(player, rollback_item)
+                    self._inv_remove_item(player, rollback_item)
                 except Exception:
                     pass
                 return False, self.language_manager.GetText("SHOP_PAYMENT_FAILED")
@@ -2457,7 +2504,7 @@ class ARCSignShopPlugin(Plugin):
                 self._change_player_money(player.name, actual_total_price)
                 try:
                     rollback_item = self._shop_item_transaction_payload(item_data, given_qty)
-                    self.inventory_manager.remove_item(player, rollback_item)
+                    self._inv_remove_item(player, rollback_item)
                 except Exception:
                     pass
                 return False, self.language_manager.GetText("SHOP_OWNER_PAYMENT_FAILED")
@@ -2520,15 +2567,15 @@ class ARCSignShopPlugin(Plugin):
             item_data = json.loads(shop_data['item_data'])
             required_item = self._shop_item_transaction_payload(item_data, quantity)
 
-            if not self.inventory_manager.has_item(player, required_item):
+            if not self._inv_has_item(player, required_item):
                 return False, self.language_manager.GetText("SHOP_PLAYER_NO_ITEMS")
             
-            if not self.inventory_manager.remove_item(player, required_item):
+            if not self._inv_remove_item(player, required_item):
                 return False, self.language_manager.GetText("SHOP_ITEM_REMOVE_FAILED")
             
             player_income = base_price - tax_amount
             if not self._change_player_money(player.name, player_income):
-                self.inventory_manager.give_item(player, required_item)
+                self._inv_give_item(player, required_item)
                 return False, self.language_manager.GetText("SHOP_PAYMENT_FAILED")
             
             update_data = {
@@ -2785,38 +2832,19 @@ class ARCSignShopPlugin(Plugin):
                 return False
 
             lines = self._build_sign_lines(shop_data)
-
-            # Endstone Sign API（0.12+ 提供后自动启用）
-            if self._try_update_sign_via_api(block, lines):
-                return True
-
-            # 基岩版没有能写方块实体 NBT 的原生命令，只能等 Sign API
-            if not self._sign_api_warned:
-                self._sign_api_warned = True
-                self._safe_log(
-                    'info',
-                    "[ARCSignShop] endstone.block.Sign unavailable in this Endstone build "
-                    "(needs 0.12+); sign faces stay blank, shops still work on interact.",
-                )
-            return False
+            return self._try_update_sign_via_api(block, lines)
         except Exception as e:
             self._safe_log('error', f"[ARCSignShop] Update sign text error: {str(e)}")
             return False
 
     def _try_update_sign_via_api(self, block: Block, lines: list) -> bool:
-        """使用 endstone.block.Sign（若运行时已提供）。"""
+        """使用 endstone.block.Sign 写入牌面文案。"""
         try:
             state = block.capture_state()
-            is_sign = (_SignType is not None and isinstance(state, _SignType)) or (
-                hasattr(state, "get_side") and hasattr(state, "update")
-            )
-            if not is_sign:
+            if not isinstance(state, _SignType):
                 return False
 
-            # Sign.Side.FRONT == 0；无枚举时直接传 0
-            side_front = 0
-            if _SignType is not None and hasattr(_SignType, "Side"):
-                side_front = getattr(_SignType.Side, "FRONT", 0)
+            side_front = getattr(_SignType.Side, "FRONT", 0)
 
             front = state.get_side(side_front)
             for i in range(4):
@@ -3696,7 +3724,7 @@ class ARCSignShopPlugin(Plugin):
 
                     if not self._require_inventory_manager(sender):
                         return
-                    if self.inventory_manager.has_item(sender, required_item) and self.inventory_manager.remove_item(sender, required_item):
+                    if self._inv_has_item(sender, required_item) and self._inv_remove_item(sender, required_item):
                         # 更新库存（可随时补货；同步抬高 quantity 上限记录）
                         new_stock = shop_data['stock'] + quantity
                         new_quantity = max(int(shop_data.get('quantity') or 0), new_stock)

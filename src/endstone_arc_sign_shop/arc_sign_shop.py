@@ -133,9 +133,27 @@ class ARCSignShopPlugin(Plugin):
 
         # 初始化经济插件 - 检查 arc_core 优先，然后 umoney
         self._init_economy_plugin()
+        self._register_arc_main_menu_button()
 
         # 注册定时任务
         self._register_scheduled_tasks()
+
+    def _register_arc_main_menu_button(self) -> None:
+        try:
+            core = self.server.plugin_manager.get_plugin("arc_core")
+        except Exception:
+            core = None
+        if core is None or not hasattr(core, "api_register_main_menu_button"):
+            return
+        try:
+            core.api_register_main_menu_button(
+                "arc_sign_shop:main",
+                "按钮商店",
+                on_click=self._show_shop_main_panel,
+                priority=6,
+            )
+        except Exception as e:
+            self._safe_log("warning", f"[ARCSignShop] Failed to register ARC main menu button: {e}")
 
     def _init_inventory_manager(self, log_failure: bool = True) -> None:
         """挂载 arc_inventory 插件与底层管理器；未安装则禁用背包相关功能。"""
@@ -229,6 +247,12 @@ class ARCSignShopPlugin(Plugin):
             return 0
     def on_disable(self) -> None:
         self._safe_log('info', "[ARCSignShop] on_disable is called!")
+        try:
+            core = self.server.plugin_manager.get_plugin("arc_core")
+            if core is not None and hasattr(core, "api_unregister_main_menu_button"):
+                core.api_unregister_main_menu_button("arc_sign_shop:main")
+        except Exception:
+            pass
         
         # 取消所有定时任务
         self._cancel_scheduled_tasks()

@@ -151,6 +151,7 @@ class ARCSignShopPlugin(Plugin):
                 "木牌商店",
                 on_click=self._show_shop_main_panel,
                 priority=6,
+                icon="textures/arc_core/sign_shop.png",
             )
         except Exception as e:
             self._safe_log("warning", f"[ARCSignShop] Failed to register ARC main menu button: {e}")

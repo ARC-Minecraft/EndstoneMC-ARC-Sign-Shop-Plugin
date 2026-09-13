@@ -148,7 +148,7 @@ class ARCSignShopPlugin(Plugin):
         try:
             core.api_register_main_menu_button(
                 "arc_sign_shop:main",
-                "按钮商店",
+                "木牌商店",
                 on_click=self._show_shop_main_panel,
                 priority=6,
             )

@@ -1,9 +1,9 @@
 # 弧光木牌商店插件 (ARC Sign Shop Plugin)
 
-[![版本](https://img.shields.io/badge/版本-1.0.8-blue.svg)](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Sign-Shop-Plugin)
+[![版本](https://img.shields.io/badge/版本-1.0.8-blue.svg)](https://github.com/ARC-Game-Club/EndstoneMC-ARC-Sign-Shop-Plugin)
 [![EndStone](https://img.shields.io/badge/EndStone-0.10+-green.svg)](https://github.com/EndstoneMC/endstone)
 
-用木牌创建商店：右键开店/交易。**需 Endstone 0.12+**（提供 `endstone.block.Sign` API）。旧版 Endstone 无法启用本插件，请升级或改用 [弧光按钮商店](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Button-Shop-Plugin)。
+用木牌创建商店：右键开店/交易。**需 Endstone 0.12+**（提供 `endstone.block.Sign` API）。旧版 Endstone 无法启用本插件，请升级或改用 [弧光按钮商店](https://github.com/ARC-Game-Club/EndstoneMC-ARC-Button-Shop-Plugin)。
 
 ## 商店类型
 
@@ -15,7 +15,7 @@
 
 ## 官方定价方式
 
-- **自动定价**：依赖 [弧光市场经济](https://github.com/ARC-Minecraft/EndstoneMC-ARC-Market-Economy-Plugin)，默认建二合一时，玩家交互再选买/卖
+- **自动定价**：依赖 [弧光市场经济](https://github.com/ARC-Game-Club/EndstoneMC-ARC-Market-Economy-Plugin)，默认建二合一时，玩家交互再选买/卖
 - **手动定价**：OP 自填固定单价（仅出售或仅回收）
 
 ## 指令
